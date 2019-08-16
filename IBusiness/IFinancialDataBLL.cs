@@ -16,6 +16,6 @@ namespace IBusiness
         /// 获取所有科目
         /// </summary>
         /// <returns></returns>
-        List<AccountModel> GetAllAccount();
+        List<AccountItemModel> GetAllAccount();
     }
 }

@@ -32,7 +32,7 @@ namespace Business
         /// 获取所有科目
         /// </summary>
         /// <returns></returns>
-        public List<AccountModel> GetAllAccount()
+        public List<AccountItemModel> GetAllAccount()
         {
             return _financialDataDal.GetAllAccount();
         }

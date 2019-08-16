@@ -18,9 +18,9 @@ namespace DataAcess
         /// 获取所有科目
         /// </summary>
         /// <returns></returns>
-        public List<AccountModel> GetAllAccount()
+        public List<AccountItemModel> GetAllAccount()
         {
-            return CurrentConnectStringContext.StoredProcedure("Account_Get").QueryMany<AccountModel>();
+            return CurrentConnectStringContext.StoredProcedure("Account_Get").QueryMany<AccountItemModel>();
         }
     }
 }

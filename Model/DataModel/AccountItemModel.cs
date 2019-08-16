@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Model.DataModel
 {
-    public class AccountModel
+    public class AccountItemModel
     {
         /// <summary>
         /// 对应的excel
