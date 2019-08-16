@@ -4,9 +4,9 @@ USE `FinancialDataAnalysis`$$
 DROP PROCEDURE IF EXISTS EARS_EARSMain_SP_Temp_DML$$
 CREATE PROCEDURE EARS_EARSMain_SP_Temp_DML()
 BEGIN
-	IF NOT EXISTS (select 1 from information_schema.tables where table_schema='FinancialDataAnalysis' and table_name='Account'  )
+	IF NOT EXISTS (select 1 from information_schema.tables where table_schema='FinancialDataAnalysis' and table_name='AccountItem'  )
 	THEN
-		create table Account
+		create table AccountItem
 		(
 		   ExcelRecordId        int comment '对应的excel',
 		   AccountCode          varchar(30) comment '科目编号',
@@ -16,7 +16,7 @@ BEGIN
 		   AccountTypeIdl       tinyint comment '类型：1：收入，2：支出',
 		   AccountSumTypeId     tinyint comment '相加类型：1：+  2：-',
 		   IsLeaf               tinyint comment '是否叶子',
-           index IX_Account_ExcelRecordId(ExcelRecordId)
+           index IX_AccountItem_ExcelRecordId(ExcelRecordId)
 		) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='科目';
 	end if;
     
@@ -71,8 +71,8 @@ CALL EARS_EARSMain_SP_Temp_DML()$$
 DROP PROCEDURE IF EXISTS EARS_EARSMain_SP_Temp_DML$$
 
 
-DROP PROCEDURE IF EXISTS Account_Get$$
-CREATE PROCEDURE `Account_Get`(
+DROP PROCEDURE IF EXISTS AccountItem_Get$$
+CREATE PROCEDURE `AccountItem_Get`(
 
 )
     SQL SECURITY INVOKER
@@ -89,5 +89,5 @@ BEGIN
 */
 	SELECT 
 		*
-	FROM `Account`;
+	FROM `AccountItem`;
 END$$
