@@ -10,11 +10,11 @@ namespace Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ITestBLL bll = ServiceLocator.Current.GetInstance<ITestBLL>();
+        private readonly IFinancialDataBLL bll = ServiceLocator.Current.GetInstance<IFinancialDataBLL>();
 
         public ActionResult Index()
         {
-            var a = bll.getA();
+            var a = bll.GetAllAccount();
             return View();
         }
 
