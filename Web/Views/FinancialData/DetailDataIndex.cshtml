@@ -1,0 +1,91 @@
+﻿
+@{
+    ViewBag.Title = "DetailDataIndex";
+}
+
+<script>
+    var excelId = @ViewBag.excelId;
+    Ext.onReady(function() {
+        //// 科目树
+        var accountTree = Ext.create('Financial.BaseTree', {
+            region: "west",
+            width:200,
+            url: "/FinancialData/GetAccountItemTreeData",
+            extraParams: { excelId: excelId}
+        });
+
+        //// 项目树
+        var financialDataItemTree = Ext.create('Financial.BaseTree', {
+            region: "center",
+            width: 200,
+            extraParams: { excelId: excelId },
+            url: "/FinancialData/GetFinancialDataItemTreeData",
+            listeners: {
+                //点击目录树+前 给root参数赋值
+                beforeitemexpand: function (record, eOpts) {
+                    var me = this;
+                    var root = me.getStore().getProxy();
+                    Ext.apply(root.extraParams, record.data);
+                }
+            }
+        });
+
+        // 左侧的panel
+        var westPanel = Ext.create('Ext.form.Panel', {
+            border: false,
+            width: 420,
+            layout: "border",  //边界布局
+            region: "west",
+            title: "条件筛选",
+            items: [
+                accountTree,
+                financialDataItemTree
+            ]
+        });
+
+        var grid = Ext.create('Financial.BaseGrid', {
+            region: "center",
+            url: "/FinancialData/GetFinancialDataGridData",
+            tbar: [
+                { text: '统计选中项', iconCls: "Add", handler: LoadGridData }, "-",
+                { text: '统计选中项下一级', iconCls: 'a_edit2', handler: LoadGridData },
+                "->", { iconCls: "a_search", text: "导出Excel", handler: function () {} }]
+        });
+
+        var panel = new Ext.Viewport({
+            layout: "border", //边界布局 
+            padding: '3 3 3 3',
+            items: [
+                westPanel,
+                grid
+            ]
+        });
+
+        function LoadGridData() {
+            var accountItemIds = accountTree.getSelectedNodes().join(',');
+            var financialDataItemIds = financialDataItemTree.getSelectedNodes().join(',');
+            Ext.Ajax.request( {
+                url: '/FinancialData/GetFinancialDataGridColumns',
+                method : 'post',
+                params : {
+                    excelId: excelId,
+                    financialDataItemIds: financialDataItemIds
+                },
+                success: function (response, options) {
+                    var response = Ext.decode(response.responseText);
+                    var newcolumns = response.GridColumns;
+                    var newstore = Ext.create('Financial.BaseStore', {
+                        url: '/FinancialData/GetFinancialDataGridData',
+                        fields: response.StoreFields,
+                        pageSize: 100
+                    });
+                    grid.reconfigure(newstore, newcolumns);  //定义grid的store和column   
+                    newstore.loadWithParams({ excelId: excelId, accountItemIds: accountItemIds, financialDataItemIds: financialDataItemIds});
+                },
+                failure : function() {
+                }
+            });
+        }
+    });
+</script>
+

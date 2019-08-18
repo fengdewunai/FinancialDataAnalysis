@@ -13,11 +13,23 @@ BEGIN
 		   ParentCode           varchar(30) comment '父级编号',
 		   AccountName          varchar(30) comment '科目名称',
 		   AccountLevel         tinyint comment '科目层级',
-		   AccountTypeIdl       tinyint comment '类型：1：收入，2：支出',
+		   AccountTypeId       tinyint comment '类型：1：收入，2：支出',
 		   AccountSumTypeId     tinyint comment '相加类型：1：+  2：-',
 		   IsLeaf               tinyint comment '是否叶子',
            index IX_AccountItem_ExcelRecordId(ExcelRecordId)
 		) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='科目';
+        
+        SET SQL_SAFE_UPDATES = 0;
+		delete from accountitem;
+		insert into accountitem
+		values(1,'6001','0','主营业务收入',1,1,1,0),
+		(1,'600101','6001','物业服务',2,1,1,0),
+		(1,'60010101','600101','物业服务费收入',3,1,1,1),
+		(1,'60010102','600101','车位收入',3,1,1,1),
+		(1,'6051','0','其他业务收入',1,1,1,0),
+		(1,'605101','6051','工本费收入',2,1,1,1),
+		(1,'605102','6051','多种经营收入',2,1,1,0),
+		(1,'60510201','605102','电梯广告收入',3,1,1,1);
 	end if;
     
     IF NOT EXISTS (select 1 from information_schema.tables where table_schema='FinancialDataAnalysis' and table_name='ExcelRecord'  )
@@ -40,12 +52,21 @@ BEGIN
 		   ExcelRecordId        int comment '对应的excel',
 		   ItemId               int comment '项目Id',
 		   ParentId             int comment '父级Id',
+           XingZhiId			int comment '所属性质，只有项目层级有',
 		   ItemName             varchar(100) comment '项目名称',
 		   ItemLevel            int comment '项目层级',
 		   IsLeaf               int comment '是否叶子',
 		   ItemTypeId           int comment '类型：1：虚拟集团 2：事业部，3：片区，4：性质，5：项目',
            index IX_FinancialDataItem_ExcelRecordId(ExcelRecordId)
 		) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='项目集合';
+        
+        SET SQL_SAFE_UPDATES = 0;
+		delete from financialdataitem;
+		insert into financialdataitem
+		values(1,1,0,'住宅产业集团',1,0,1),
+		(1,2,1,'职能',2,0,1),
+		(1,3,2,'梁军片区(旧)',3,1,1),
+		(1,6001,0,'新商业产业集团',1,1,1);
 	end if;
 
 	IF NOT EXISTS (select 1 from information_schema.tables where table_schema='FinancialDataAnalysis' and table_name='FinancialData'  )
@@ -71,16 +92,16 @@ CALL EARS_EARSMain_SP_Temp_DML()$$
 DROP PROCEDURE IF EXISTS EARS_EARSMain_SP_Temp_DML$$
 
 
-DROP PROCEDURE IF EXISTS AccountItem_Get$$
-CREATE PROCEDURE `AccountItem_Get`(
-
+DROP PROCEDURE IF EXISTS AccountItem_GetByExcelRecordId$$
+CREATE PROCEDURE `AccountItem_GetByExcelRecordId`(
+	v_ExcelRecordId int
 )
     SQL SECURITY INVOKER
 BEGIN
 /* 
 创建者:		高峰
 创建日期:	2019-08-16
-描述：		获取所有科目	
+描述：		获取excelid下所有科目	
 修改记录:
 --------------------------------------------------------
 修改者		修改日期		修改目的
@@ -89,5 +110,130 @@ BEGIN
 */
 	SELECT 
 		*
-	FROM `AccountItem`;
+	FROM `AccountItem`
+    where ExcelRecordId = v_ExcelRecordId;
+END$$
+
+DROP PROCEDURE IF EXISTS ExcelRecord_Get$$
+CREATE PROCEDURE `ExcelRecord_Get`(
+)
+    SQL SECURITY INVOKER
+BEGIN
+/* 
+创建者:		高峰
+创建日期:	2019-08-16
+描述：		获取所有excel记录	
+修改记录:
+--------------------------------------------------------
+修改者		修改日期		修改目的
+
+--------------------------------------------------------
+*/
+	SELECT 
+		*
+	FROM `ExcelRecord`;
+END$$
+
+
+DROP PROCEDURE IF EXISTS `Excelrecord_Save`$$
+CREATE PROCEDURE `Excelrecord_Save`(
+	v_ExcelRecordId int(11)
+	,v_ExcelName varchar(200)
+	,v_CreateDateTime datetime
+	,v_ExcelUrl varchar(500)
+	,v_StatusFlag tinyint(4)
+)
+	SQL SECURITY INVOKER
+BEGIN
+/* 
+创建者:		高峰
+创建日期:	2019-08-16
+描述：		保存Excelrecord
+修改记录:
+--------------------------------------------------------
+修改者		修改日期		修改目的
+高峰		2019-08-16		创建
+--------------------------------------------------------
+*/
+	IF NOT EXISTS (SELECT 1 FROM `Excelrecord` WHERE `ExcelRecordId`=v_ExcelRecordId) THEN
+		INSERT INTO `Excelrecord`(
+			`ExcelName`,
+			`CreateDateTime`,
+			`ExcelUrl`,
+			`StatusFlag`
+		) VALUES(
+			v_ExcelName,
+			v_CreateDateTime,
+			v_ExcelUrl,
+			v_StatusFlag
+		);
+		SELECT LAST_INSERT_ID();
+	ELSE 
+		UPDATE `Excelrecord` SET
+			`ExcelName`=IFNULL(v_ExcelName,`ExcelName`),
+			`CreateDateTime`=IFNULL(v_CreateDateTime,`CreateDateTime`),
+			`ExcelUrl`=IFNULL(v_ExcelUrl,`ExcelUrl`),
+			`StatusFlag`=IFNULL(v_StatusFlag,`StatusFlag`)
+		WHERE 
+			`ExcelRecordId`=v_ExcelRecordId
+		;
+		SELECT v_ExcelRecordId;
+	END IF;
+END$$
+
+DROP PROCEDURE IF EXISTS FinancialDataItem_GetByExcelRecordId$$
+CREATE PROCEDURE `FinancialDataItem_GetByExcelRecordId`(
+	v_ExcelRecordId int
+)
+    SQL SECURITY INVOKER
+BEGIN
+/* 
+创建者:		高峰
+创建日期:	2019-08-16
+描述：		获取所有excel记录	
+修改记录:
+--------------------------------------------------------
+修改者		修改日期		修改目的
+
+--------------------------------------------------------
+*/
+	SELECT 
+		*
+	FROM `FinancialDataItem`
+    where ExcelRecordId = v_ExcelRecordId;
+END$$
+
+DROP PROCEDURE IF EXISTS FinancialData_GetByFilter$$
+CREATE PROCEDURE `FinancialData_GetByFilter`(
+	v_ExcelRecordId int(11)
+	,v_XiangMuIdId int(11)
+	,v_XingZhiId int(11)
+	,v_PianQuId int(11)
+	,v_ShiYeBuId int(11)
+	,v_AccountCode int(11)
+	,v_QiJianTypeId int(11)
+)
+    SQL SECURITY INVOKER
+BEGIN
+/* 
+创建者:		高峰
+创建日期:	2019-08-16
+描述：		获取所有excel记录	
+修改记录:
+--------------------------------------------------------
+修改者		修改日期		修改目的
+
+--------------------------------------------------------
+*/
+	SELECT 
+		*
+	FROM `FinancialData`
+    where ExcelRecordId = v_ExcelRecordId
+    and (v_XiangMuIdId = 0 or XiangMuIdId=v_XiangMuIdId)
+    and (v_XingZhiId = 0 or XingZhiId=v_XingZhiId)
+    and (v_PianQuId = 0 or PianQuId=v_PianQuId)
+    and (v_ShiYeBuId = 0 or ShiYeBuId=v_ShiYeBuId)
+    and (v_AccountCode is null or AccountCode=v_AccountCode)
+    and (v_QiJianTypeId = 0 or QiJianTypeId=v_QiJianTypeId)
+    ;
 END$$

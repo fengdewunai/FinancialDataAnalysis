@@ -29,8 +29,7 @@ namespace Common
     public class DataAccessBase
     {
         private const int TimeOut = 600;
-        public IDbContext CurrentConnectStringContext;
-        private static string connectionString = ConfigurationManager.AppSettings.Get("ConfigDbPrefix");
+        public static IDbContext CurrentConnectStringContext;
 
         /// <summary>
         /// 默认的构造函数使用Config库
@@ -59,7 +58,7 @@ namespace Common
         /// <returns></returns>
         public static int BulkLoadData(string fileName, string tableName)
         {
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            using (MySqlConnection conn = new MySqlConnection(CurrentConnectStringContext.Data.ConnectionString))
             {
                
                 MySqlBulkLoader bl = new MySqlBulkLoader(conn);
@@ -91,7 +90,7 @@ namespace Common
             string tmpPath = Path.GetTempFileName();
             string csv = DataTableToCsv(table);
             File.WriteAllText(tmpPath, csv);
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            using (MySqlConnection conn = new MySqlConnection(CurrentConnectStringContext.Data.ConnectionString))
             {
 
                 var bulk = new MySqlBulkLoader(conn)
@@ -128,7 +127,7 @@ namespace Common
             string tmpPath = Path.GetTempFileName();
             string csv = DataTableToCsv(table);
             File.WriteAllText(tmpPath, csv);
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            using (MySqlConnection conn = new MySqlConnection(CurrentConnectStringContext.Data.ConnectionString))
             {
                 var bulk = new MySqlBulkLoader(conn)
                 {

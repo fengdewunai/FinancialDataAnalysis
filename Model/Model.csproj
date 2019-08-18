@@ -42,7 +42,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataModel\AccountItemModel.cs" />
+    <Compile Include="DataModel\DynamicGridDataModel.cs" />
+    <Compile Include="DataModel\ExcelRecordModel.cs" />
+    <Compile Include="DataModel\FinancialDataItemModel.cs" />
+    <Compile Include="DataModel\FinancialDataModel.cs" />
+    <Compile Include="Enum\FinancialDataItemTypeEnum.cs" />
+    <Compile Include="ExcelDataModel.cs" />
+    <Compile Include="GridColumnsModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TreeDataModel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

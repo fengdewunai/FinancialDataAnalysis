@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "ExcelListIndex";
+}
+<script type="text/javascript" src="/Scripts/FinancialData/ExcelListIndex/AddExcelPanel.js"></script>
+<script>
+    Ext.onReady(function() {
+
+        var grid = Ext.create('Financial.BaseGrid', {
+            id:"ExcelListGrid",
+            region: "center",
+            url: "/FinancialData/GetExcelList",
+            autoLoad: true,
+            pageSize: 100,
+            showBbar:true,
+            fields: ["ExcelRecordId", "ExcelName", "CreateDateTime", "ExcelUrl"],
+            columns: [
+                { text: 'excelId', dataIndex: 'ExcelRecordId', hidden: true },
+                {
+                    text: 'excel名称', flex: 3, dataIndex: 'ExcelName', align: 'left', renderer: function (v, cellmeta, record, rowIndex, columnIndex, store) {
+                        return "<a href='/FinancialData/DetailDataIndex?excelId=" + record.get('ExcelRecordId') + "'>" + v + "</a>";
+                } },
+                { text: '创建日期', flex: 1.5,  dataIndex: 'CreateDateTime', Width: 180, align: 'left' },
+                { text: '下载原始excel', flex: 1,  dataIndex: 'ExcelUrl', Width: 120, align: 'center', renderer: function (v) { return "<a href='"+v+"'>下载</a>" } }
+            ],
+            tbar: [
+                "->", { iconCls: "a_search", text: "导入Excel", handler: function () { uploadExcelWin.show(); } }]
+        });
+
+        var panel = new Ext.Viewport({
+            layout: "border", //边界布局 
+            padding: '3 3 3 3',
+            items: [
+                grid
+            ]
+        });
+
+    });
+
+</script>

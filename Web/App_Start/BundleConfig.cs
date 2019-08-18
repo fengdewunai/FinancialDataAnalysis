@@ -25,6 +25,18 @@ namespace Web
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/ext").Include(
+                "~/Scripts/ext4.2/ext-all.js",
+                "~/Scripts/ext4.2/ext-lang-zh_CN.js",
+                "~/Scripts/extBase/BaseTree.js",
+                "~/Scripts/extBase/BaseStore.js",
+                "~/Scripts/extBase/BaseGrid.js"
+            ));
+
+            bundles.Add(new StyleBundle("~/Content/extCss").Include(
+                "~/Scripts/ext4.2/resources/css/ext-all.css"
+            ));
         }
     }
 }

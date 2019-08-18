@@ -14,7 +14,7 @@ namespace Web.Controllers
 
         public ActionResult Index()
         {
-            var a = bll.GetAllAccount();
+            var a = bll.GetAccountByExcelRecordId(1);
             return View();
         }
 
