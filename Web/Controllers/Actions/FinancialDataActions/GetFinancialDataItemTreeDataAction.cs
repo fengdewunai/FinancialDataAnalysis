@@ -5,6 +5,7 @@ using System.Web;
 using IBusiness;
 using Model;
 using Model.DataModel;
+using Model.Enum;
 
 namespace Web.Controllers.Actions.FinancialDataActions
 {
@@ -22,7 +23,7 @@ namespace Web.Controllers.Actions.FinancialDataActions
             _financialDataBll = financialDataBll;
         }
 
-        public List<TreeDataModel> Process(string id, int excelId)
+        public List<TreeDataModel> Process(string id, int excelId, int treeTypeId)
         {
             var result = new List<TreeDataModel>();
             var items = new List<FinancialDataItemModel>();
@@ -31,9 +32,13 @@ namespace Web.Controllers.Actions.FinancialDataActions
             {
                 items = datas.Where(x => x.ItemLevel == 1).ToList();
             }
-            else
+            else if(treeTypeId == 1) //展示片区
             {
-                items = datas.Where(x => x.ParentId.ToString() == id).ToList();
+                items = datas.Where(x => x.ItemTypeId != (int)FinancialDataItemTypeEnum.XingZhi && x.ParentId.ToString() == id).ToList();
+            }
+            else if(treeTypeId == 2) //展示性质
+            {
+                items = datas.Where(x => x.ItemTypeId != (int)FinancialDataItemTypeEnum.PianQu && (x.ParentId.ToString() == id || x.XingZhiId.ToString() == id)).ToList();
             }
             foreach (var item in items)
             {

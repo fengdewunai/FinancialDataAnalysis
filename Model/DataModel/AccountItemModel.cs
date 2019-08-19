@@ -36,7 +36,7 @@ namespace Model.DataModel
         /// <summary>
         /// 类型：1：收入，2：支出
         /// </summary>
-        public int AccountTypeIdl { get; set; }
+        public int AccountTypeId { get; set; }
 
         /// <summary>
         /// 相加类型：1：+  2：-

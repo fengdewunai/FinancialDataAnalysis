@@ -14,42 +14,88 @@
             extraParams: { excelId: excelId}
         });
 
-        //// 项目树
-        var financialDataItemTree = Ext.create('Financial.BaseTree', {
+        //// 片区项目树
+        var financialDataItemForPianQuTree = Ext.create('Financial.BaseTree', {
             region: "center",
             width: 200,
-            extraParams: { excelId: excelId },
-            url: "/FinancialData/GetFinancialDataItemTreeData",
-            listeners: {
-                //点击目录树+前 给root参数赋值
-                beforeitemexpand: function (record, eOpts) {
-                    var me = this;
-                    var root = me.getStore().getProxy();
-                    Ext.apply(root.extraParams, record.data);
-                }
-            }
+            extraParams: { excelId: excelId, treeTypeId:1 },
+            url: "/FinancialData/GetFinancialDataItemTreeData"
         });
+
+        //// 性质项目树
+        var financialDataItemForXingZhiTree = Ext.create('Financial.BaseTree', {
+            region: "center",
+            width: 200,
+            hidden:true,
+            extraParams: { excelId: excelId, treeTypeId: 2 },
+            url: "/FinancialData/GetFinancialDataItemTreeData"
+        });
+
+        var financialDataItemTree = financialDataItemForPianQuTree;
 
         // 左侧的panel
         var westPanel = Ext.create('Ext.form.Panel', {
             border: false,
             width: 420,
-            layout: "border",  //边界布局
+            layout: "border", 
             region: "west",
             title: "条件筛选",
             items: [
                 accountTree,
-                financialDataItemTree
-            ]
+                {
+                    layout: "border",
+                    region: "center",
+                    items: [
+                        financialDataItemForPianQuTree,
+                        financialDataItemForXingZhiTree
+                    ],
+                    tbar: [{
+                        xtype: 'radiogroup',
+                        name: 'TreeTypeRadioGroup',
+                        fieldLabel: 'radios', 
+                        columnWidth: 0.7,
+                        items: [
+                            { boxLabel: '片区', name: 'rb', inputValue: '1' }, 
+                            { boxLabel: '性质', name: 'rb', inputValue: '2' }
+                        ],
+                        listeners: {
+                            change: function (rdgroup, checked) {
+                                var checkedValue = checked.getRawValue();
+                                alert(checked.getRawValue());
+                                if (checkedValue == "1") {
+                                    financialDataItemTree = financialDataItemForPianQuTree;
+                                    financialDataItemForPianQuTree.show();
+                                    financialDataItemForXingZhiTree.hide();
+                                } else {
+                                    financialDataItemTree = financialDataItemForXingZhiTree;
+                                    financialDataItemForXingZhiTree.show();
+                                    financialDataItemForPianQuTree.hide();
+                                }
+                            }
+                        }
+                    }]
+                }]
         });
 
+        // 右侧grid
         var grid = Ext.create('Financial.BaseGrid', {
             region: "center",
             url: "/FinancialData/GetFinancialDataGridData",
             tbar: [
+                {
+                    xtype: 'radiogroup',
+                    name: 'GridQiJianRadioGroup',
+                    id:'GridQiJianRadioGroup',
+                    fieldLabel: '会计期间：', 
+                    columnWidth: 0.7,
+                    items: [
+                        { boxLabel: '本年', name: 'rb', inputValue: '1' }, 
+                        { boxLabel: '本月', name: 'rb', inputValue: '2' }
+                    ]
+                },"-",
                 { text: '统计选中项', iconCls: "Add", handler: LoadGridData }, "-",
                 { text: '统计选中项下一级', iconCls: 'a_edit2', handler: LoadGridData },
-                "->", { iconCls: "a_search", text: "导出Excel", handler: function () {} }]
+                "->", { iconCls: "a_search", text: "导出Excel", handler: ExportExcel }]
         });
 
         var panel = new Ext.Viewport({
@@ -61,9 +107,11 @@
             ]
         });
 
+        // 加载grid数据
         function LoadGridData() {
             var accountItemIds = accountTree.getSelectedNodes().join(',');
             var financialDataItemIds = financialDataItemTree.getSelectedNodes().join(',');
+            var qiJianTypeId = Ext.getCmp("GridQiJianRadioGroup").getValue();
             Ext.Ajax.request( {
                 url: '/FinancialData/GetFinancialDataGridColumns',
                 method : 'post',
@@ -80,11 +128,19 @@
                         pageSize: 100
                     });
                     grid.reconfigure(newstore, newcolumns);  //定义grid的store和column   
-                    newstore.loadWithParams({ excelId: excelId, accountItemIds: accountItemIds, financialDataItemIds: financialDataItemIds});
+                    newstore.loadWithParams({ excelId: excelId, accountItemIds: accountItemIds, financialDataItemIds: financialDataItemIds, qiJianTypeId: qiJianTypeId});
                 },
                 failure : function() {
                 }
             });
+        }
+
+        // 导出excel
+        function ExportExcel() {
+            var accountItemIds = accountTree.getSelectedNodes().join(',');
+            var financialDataItemIds = financialDataItemTree.getSelectedNodes().join(',');
+            var qiJianTypeId = Ext.getCmp("GridQiJianRadioGroup").getValue();
+            location.href = "/FinancialData/ExportExcel?excelId=" + excelId + "&accountItemIds=" + accountItemIds + "&financialDataItemIds=" + financialDataItemIds + "&qiJianTypeId=" + qiJianTypeId;
         }
     });
 </script>

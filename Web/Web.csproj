@@ -69,6 +69,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\RuanYun.Logger.dll</HintPath>
     </Reference>
+    <Reference Include="RuanYun.Utility">
+      <HintPath>..\packages\RuanYun.Utility.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -149,6 +152,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\Actions\FinancialDataActions\ExportExcelAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\GetAccountItemTreeDataAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\GetExcelListAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\GetFinancialDataGridColumnsAction.cs" />

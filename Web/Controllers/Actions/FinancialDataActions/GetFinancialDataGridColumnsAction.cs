@@ -12,33 +12,16 @@ namespace Web.Controllers.Actions.FinancialDataActions
     /// </summary>
     public class GetFinancialDataGridColumnsAction
     {
-        private IFinancialDataBLL _financialDataBll;
+        private IFinancialDataExtendBLL _financialDataExtendBLL;
 
-        public GetFinancialDataGridColumnsAction(IFinancialDataBLL financialDataBll)
+        public GetFinancialDataGridColumnsAction(IFinancialDataExtendBLL financialDataExtendBll)
         {
-            _financialDataBll = financialDataBll;
+            _financialDataExtendBLL = financialDataExtendBll;
         }
 
         public GridColumnsModel Process(int excelId, string financialDataItemIds)
         {
-            var result = new GridColumnsModel(){GridColumns = new List<GridColumnsDetail>(), StoreFields = new List<string>()};
-            var financialDataItems = _financialDataBll.GetFinancialDataItemByExcelRecordId(excelId);
-            var financialDataItemIdList = financialDataItemIds.Split(',').OrderBy(x => x).OrderBy(x => x).ToList();
-            result.GridColumns.Add(new GridColumnsDetail() {text = "项目名称", dataIndex = "AccountName", width = 120});
-            result.StoreFields.Add("AccountName");
-            foreach (var financialDataItemId in financialDataItemIdList)
-            {
-                var financialDataItem = financialDataItems.FirstOrDefault(x => x.ItemId.ToString() == financialDataItemId);
-                result.GridColumns.Add(new GridColumnsDetail()
-                {
-                    text = financialDataItem.ItemName.ToString(),
-                    dataIndex = financialDataItem.ItemId.ToString(),
-                    width = 120
-                });
-                result.StoreFields.Add(financialDataItem.ItemId.ToString());
-            }
-
-            return result;
+            return _financialDataExtendBLL.GetGridColumns(excelId, financialDataItemIds);
         }
     }
 }

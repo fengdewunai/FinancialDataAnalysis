@@ -324,7 +324,7 @@ namespace Web.Controllers.Actions.FinancialDataActions
             {
                 accountItem.IsLeaf = 1;
             }
-            accountItem.AccountTypeIdl = Convert.ToInt32(accountItem.AccountCode.Substring(0, 4)) < 6401 ? 1 : 2;
+            accountItem.AccountTypeId = Convert.ToInt32(accountItem.AccountCode.Substring(0, 4)) < 6401 ? 1 : 2;
             accountItem.AccountSumTypeId = accountItem.AccountCode == "6813" ? 2 : 1;
         }
 

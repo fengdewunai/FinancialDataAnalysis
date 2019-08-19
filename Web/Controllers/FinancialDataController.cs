@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Mvc;
 using IBusiness;
@@ -16,6 +19,8 @@ namespace Web.Controllers
     public class FinancialDataController : Controller
     {
         private readonly IFinancialDataBLL _financialDataBll = ServiceLocator.Current.GetInstance<IFinancialDataBLL>();
+
+        private readonly IFinancialDataExtendBLL _financialDataExtendBll = ServiceLocator.Current.GetInstance<IFinancialDataExtendBLL>();
 
         // GET: FinancialData
         public ActionResult DetailDataIndex(int excelId)
@@ -59,25 +64,30 @@ namespace Web.Controllers
         /// 获取项目树
         /// </summary>
         /// <param name="id"></param>
+        /// <param name="excelId"></param>
+        /// <param name="treeTypeId">树类型，1：展示片区，2：展示性质</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetFinancialDataItemTreeData(string id, int excelId)
+        public ActionResult GetFinancialDataItemTreeData(string id, int excelId, int treeTypeId)
         {
             var action = new GetFinancialDataItemTreeDataAction(_financialDataBll);
-            var result = action.Process(id, excelId);
+            var result = action.Process(id, excelId, treeTypeId);
             return Json(result);
         }
 
         /// <summary>
         /// 获取数据
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="excelId"></param>
+        /// <param name="accountItemIds">科目id集合</param>
+        /// <param name="financialDataItemIds">项目id集合</param>
+        /// <param name="qiJianTypeId">会计期间类型</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetFinancialDataGridData(int excelId, string accountItemIds, string financialDataItemIds)
+        public ActionResult GetFinancialDataGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId = 1)
         {
-            var action = new GetFinancialDataGridDataAction(_financialDataBll);
-            var result = action.Process(excelId, accountItemIds, financialDataItemIds);
+            var action = new GetFinancialDataGridDataAction(_financialDataExtendBll);
+            var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId);
             return Json(result);
         }
 
@@ -89,7 +99,7 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult GetFinancialDataGridColumns(int excelId, string financialDataItemIds)
         {
-            var action = new GetFinancialDataGridColumnsAction(_financialDataBll);
+            var action = new GetFinancialDataGridColumnsAction(_financialDataExtendBll);
             var result = action.Process(excelId, financialDataItemIds);
             return Json(result);
         }
@@ -114,6 +124,21 @@ namespace Web.Controllers
                 Log.Write("上传Excel出错",MessageType.Error,typeof(FinancialDataController),ex);
                 return Json(new SuccessModel());
             }
+        }
+
+        /// <summary>
+        /// 获取数据
+        /// </summary>
+        /// <param name="excelId"></param>
+        /// <param name="accountItemIds">科目id集合</param>
+        /// <param name="financialDataItemIds">项目id集合</param>
+        /// <param name="qiJianTypeId">会计期间类型</param>
+        /// <returns></returns>
+        public FileResult ExportExcel(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId = 1)
+        {
+            var action = new ExportExcelAction(_financialDataBll, _financialDataExtendBll);
+            var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId);
+            return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("统计数据_{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmss")));
         }
     }
 }
