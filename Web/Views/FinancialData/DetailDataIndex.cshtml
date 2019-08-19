@@ -52,16 +52,14 @@
                     tbar: [{
                         xtype: 'radiogroup',
                         name: 'TreeTypeRadioGroup',
-                        fieldLabel: 'radios', 
-                        columnWidth: 0.7,
+                        width: 150,
                         items: [
-                            { boxLabel: '片区', name: 'rb', inputValue: '1' }, 
-                            { boxLabel: '性质', name: 'rb', inputValue: '2' }
+                            { boxLabel: '片区', name: 'TreeTypeRadio', inputValue: '1', checked:true}, 
+                            { boxLabel: '性质', name: 'TreeTypeRadio', inputValue: '2' }
                         ],
                         listeners: {
-                            change: function (rdgroup, checked) {
-                                var checkedValue = checked.getRawValue();
-                                alert(checked.getRawValue());
+                            change: function (me, newValue, oldValue, eOpts) {
+                                var checkedValue = newValue.TreeTypeRadio;
                                 if (checkedValue == "1") {
                                     financialDataItemTree = financialDataItemForPianQuTree;
                                     financialDataItemForPianQuTree.show();
@@ -85,16 +83,17 @@
                 {
                     xtype: 'radiogroup',
                     name: 'GridQiJianRadioGroup',
-                    id:'GridQiJianRadioGroup',
-                    fieldLabel: '会计期间：', 
-                    columnWidth: 0.7,
+                    id: 'GridQiJianRadioGroup',
+                    labelWidth:60,
+                    fieldLabel: '会计期间',
+                    width:160,
                     items: [
-                        { boxLabel: '本年', name: 'rb', inputValue: '1' }, 
-                        { boxLabel: '本月', name: 'rb', inputValue: '2' }
+                        { boxLabel: '本年', name: 'GridQiJianRadio', inputValue: '1', checked:true }, 
+                        { boxLabel: '本月', name: 'GridQiJianRadio', inputValue: '2' }
                     ]
                 },"-",
                 { text: '统计选中项', iconCls: "Add", handler: LoadGridData }, "-",
-                { text: '统计选中项下一级', iconCls: 'a_edit2', handler: LoadGridData },
+                { text: '统计选中项下一级', iconCls: 'a_edit2', handler: function () { Ext.MessageBox.alert("提示", "暂未完成，敬请期待");} },
                 "->", { iconCls: "a_search", text: "导出Excel", handler: ExportExcel }]
         });
 
@@ -137,10 +136,12 @@
 
         // 导出excel
         function ExportExcel() {
+            Ext.MessageBox.wait("正在生成Excel", "等待");
             var accountItemIds = accountTree.getSelectedNodes().join(',');
             var financialDataItemIds = financialDataItemTree.getSelectedNodes().join(',');
             var qiJianTypeId = Ext.getCmp("GridQiJianRadioGroup").getValue();
             location.href = "/FinancialData/ExportExcel?excelId=" + excelId + "&accountItemIds=" + accountItemIds + "&financialDataItemIds=" + financialDataItemIds + "&qiJianTypeId=" + qiJianTypeId;
+            Ext.MessageBox.hide();
         }
     });
 </script>

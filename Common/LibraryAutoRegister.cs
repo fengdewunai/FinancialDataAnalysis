@@ -71,6 +71,7 @@ namespace Common
             }
             return
                 Directory.GetFiles(path, "*.dll")
+                    .Where(x=>x.ToLower().Contains("business") || x.ToLower().Contains("ibusiness") || x.ToLower().Contains("dataacess") || x.ToLower().Contains("idataacess"))
                     .Select(Path.GetFileNameWithoutExtension)
                     .ToList();
         }

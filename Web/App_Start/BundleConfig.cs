@@ -35,7 +35,8 @@ namespace Web
             ));
 
             bundles.Add(new StyleBundle("~/Content/extCss").Include(
-                "~/Scripts/ext4.2/resources/css/ext-all.css"
+                "~/Scripts/ext4.2/resources/css/ext-all.css",
+                "~/Scripts/ext4.2/resources/ext-theme-classic/ext-theme-classic-all.css"
             ));
         }
     }

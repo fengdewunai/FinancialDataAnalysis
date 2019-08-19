@@ -56,6 +56,7 @@ namespace Web.Controllers.Actions.FinancialDataActions
             sheet.InsertSheetContent(ExcelExportRequest.GetInstance(result));
             var stream = new MemoryStream();
             excelBuilder.Save(stream,SaveFormat.Xlsx);
+            stream.Position = 0;
             return stream;
         }
 

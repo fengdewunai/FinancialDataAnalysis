@@ -211,14 +211,14 @@ namespace Business
         /// <param name="resultDic"></param>
         private void BuildSumResult(List<AccountItemModel> accountItems, Dictionary<string, string> originDatas, Dictionary<string, string> resultDic)
         {
-            var accountItem = accountItems.FirstOrDefault(x => x.AccountCode == originDatas["AccountName"]);
+            var accountItem = accountItems.FirstOrDefault(x => x.AccountName == originDatas["AccountName"]);
             foreach (var dicData in originDatas)
             {
                 if (dicData.Key == "AccountName")
                 {
                     continue;
                 }
-                if (resultDic.ContainsKey(dicData.Key))
+                if (!resultDic.ContainsKey(dicData.Key))
                 {
                     resultDic.Add(dicData.Key, dicData.Value);
                 }
