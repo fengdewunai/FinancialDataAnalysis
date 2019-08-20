@@ -19,9 +19,9 @@ namespace Web.Controllers.Actions.FinancialDataActions
             _financialDataExtendBLL = financialDataExtendBll;
         }
 
-        public GridColumnsModel Process(int excelId, string financialDataItemIds)
+        public GridColumnsModel Process(int excelId, string financialDataItemIds, int onlyStatisticChildren)
         {
-            return _financialDataExtendBLL.GetGridColumns(excelId, financialDataItemIds);
+            return _financialDataExtendBLL.GetGridColumns(excelId, financialDataItemIds, onlyStatisticChildren);
         }
     }
 }

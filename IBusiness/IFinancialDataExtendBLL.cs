@@ -19,7 +19,7 @@ namespace IBusiness
         /// <param name="excelId"></param>
         /// <param name="financialDataItemIds"></param>
         /// <returns></returns>
-        GridColumnsModel GetGridColumns(int excelId, string financialDataItemIds);
+        GridColumnsModel GetGridColumns(int excelId, string financialDataItemIds, int onlyStatisticChildren);
 
         /// <summary>
         /// 获取grid的数据
@@ -29,6 +29,6 @@ namespace IBusiness
         /// <param name="financialDataItemIds"></param>
         /// <param name="qiJianTypeId"></param>
         /// <returns></returns>
-        DynamicGridDataModel GetGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId);
+        DynamicGridDataModel GetGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId, int onlyStatisticChildren);
     }
 }

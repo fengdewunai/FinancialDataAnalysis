@@ -35,12 +35,14 @@ namespace Business
         /// <param name="excelId"></param>
         /// <param name="financialDataItemIds"></param>
         /// <returns></returns>
-        public GridColumnsModel GetGridColumns(int excelId, string financialDataItemIds)
+        public GridColumnsModel GetGridColumns(int excelId, string financialDataItemIds, int onlyStatisticChildren)
         {
             var result = new GridColumnsModel() { GridColumns = new List<GridColumnsDetail>(), StoreFields = new List<string>() };
             var financialDataItems = _financialDataBll.GetFinancialDataItemByExcelRecordId(excelId);
-            var financialDataItemIdList = financialDataItemIds.Split(',').OrderBy(x => x).OrderBy(x => x).ToList();
-            result.GridColumns.Add(new GridColumnsDetail() { text = "项目名称", dataIndex = "AccountName", width = 120 });
+            var financialDataItemIdList = GetFinancialDataItemIdList(financialDataItemIds,onlyStatisticChildren, financialDataItems);
+            result.GridColumns.Add(new GridColumnsDetail() { text = "科目编号", dataIndex = "AccountCode", hidden = true, renderer = " function (v, cellmeta, record, rowIndex, columnIndex, store) { return v;}" });
+            result.GridColumns.Add(new GridColumnsDetail() { text = "项目名称", dataIndex = "AccountName", width = 120, renderer = " function (v, cellmeta, record, rowIndex, columnIndex, store) { return v;}" });
+            result.StoreFields.Add("AccountCode");
             result.StoreFields.Add("AccountName");
             foreach (var financialDataItemId in financialDataItemIdList)
             {
@@ -49,11 +51,11 @@ namespace Business
                 {
                     text = financialDataItem.ItemName.ToString(),
                     dataIndex = financialDataItem.ItemId.ToString(),
-                    width = 120
+                    width = 120,
+                    renderer = " function (v, cellmeta, record, rowIndex, columnIndex, store) { return RendererGridData(v, cellmeta, record, rowIndex, columnIndex, store);}"
                 });
                 result.StoreFields.Add(financialDataItem.ItemId.ToString());
             }
-
             return result;
         }
 
@@ -61,11 +63,12 @@ namespace Business
         /// 获取grid的数据
         /// </summary>
         /// <param name="excelId"></param>
-        /// <param name="accountItemIds"></param>
-        /// <param name="financialDataItemIds"></param>
-        /// <param name="qiJianTypeId"></param>
+        /// <param name="accountItemIds">科目</param>
+        /// <param name="financialDataItemIds">项目</param>
+        /// <param name="qiJianTypeId">期间类型</param>
+        /// <param name="onlyStatisticChildren">是否只统计下级项目</param>
         /// <returns></returns>
-        public DynamicGridDataModel GetGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId)
+        public DynamicGridDataModel GetGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId, int onlyStatisticChildren)
         {
             var gridData = new DynamicGridDataModel() { rows = new List<Dictionary<string, string>>() };
             var shouRuDatas = new List<Dictionary<string, string>>();
@@ -78,13 +81,14 @@ namespace Business
             var accountItems = _financialDataBll.GetAccountByExcelRecordId(excelId);
             var financialDataItems = _financialDataBll.GetFinancialDataItemByExcelRecordId(excelId);
             var accountItemIdList = accountItemIds.Split(',').OrderBy(x => x).ToList();
-            var financialDataItemIdList = financialDataItemIds.Split(',').OrderBy(x => x).ToList();
+            var financialDataItemIdList = GetFinancialDataItemIdList(financialDataItemIds, onlyStatisticChildren, financialDataItems);
             gridData.total = accountItemIdList.Count;
             foreach (var accountItemId in accountItemIdList)
             {
                 var dataDic = new Dictionary<string, string>();
                 var accountItem = accountItems.First(x => x.AccountCode == accountItemId);
                 var dataInAccountItem = datas.Where(x => x.AccountCode == accountItemId).ToList();
+                dataDic.Add("AccountCode", accountItem.AccountCode);
                 dataDic.Add("AccountName", accountItem.AccountName);
                 foreach (var financialDataItemId in financialDataItemIdList)
                 {
@@ -151,6 +155,7 @@ namespace Business
             {
                 result.AddRange(shouRuDatas);
                 shouRuSumDic.Add("AccountName", "小计");
+                shouRuSumDic.Add("AccountCode", "0");
                 foreach (var shouRuDataDic in shouRuDatas)
                 {
                     BuildSumResult(accountItems, shouRuDataDic, shouRuSumDic);
@@ -162,6 +167,7 @@ namespace Business
             {
                 result.AddRange(zhiChuDatas);
                 zhiChuSumDic.Add("AccountName", "小计");
+                zhiChuSumDic.Add("AccountCode", "0");
                 foreach (var zhiChuDataDic in zhiChuDatas)
                 {
                     BuildSumResult(accountItems, zhiChuDataDic, zhiChuSumDic);
@@ -170,11 +176,12 @@ namespace Business
             }
             var resultSumDic = new Dictionary<string, string>();
             resultSumDic.Add("AccountName", "收支盈亏");
+            resultSumDic.Add("AccountCode", "0");
             if (shouRuSumDic.Count > 0)
             {
                 foreach (var shouRuData in shouRuSumDic)
                 {
-                    if (shouRuData.Key == "AccountName")
+                    if (shouRuData.Key == "AccountName" || shouRuData.Key == "AccountCode")
                     {
                         continue;
                     }
@@ -185,7 +192,7 @@ namespace Business
             {
                 foreach (var zhiChuData in zhiChuSumDic)
                 {
-                    if (zhiChuData.Key == "AccountName")
+                    if (zhiChuData.Key == "AccountName" || zhiChuData.Key == "AccountCode")
                     {
                         continue;
                     }
@@ -211,10 +218,10 @@ namespace Business
         /// <param name="resultDic"></param>
         private void BuildSumResult(List<AccountItemModel> accountItems, Dictionary<string, string> originDatas, Dictionary<string, string> resultDic)
         {
-            var accountItem = accountItems.FirstOrDefault(x => x.AccountName == originDatas["AccountName"]);
+            var accountItem = accountItems.FirstOrDefault(x => x.AccountCode == originDatas["AccountCode"]);
             foreach (var dicData in originDatas)
             {
-                if (dicData.Key == "AccountName")
+                if (dicData.Key == "AccountName" || dicData.Key == "AccountCode")
                 {
                     continue;
                 }
@@ -228,6 +235,36 @@ namespace Business
                     resultDic[dicData.Key] = sumValue.ToString();
                 }
             }
+        }
+
+        /// <summary>
+        /// 获取项目列表
+        /// </summary>
+        /// <param name="financialDataItemIds"></param>
+        /// <param name="onlyStatisticChildren"></param>
+        /// <param name="financialDataItems"></param>
+        /// <returns></returns>
+        private List<string> GetFinancialDataItemIdList(string financialDataItemIds, int onlyStatisticChildren, List<FinancialDataItemModel> financialDataItems)
+        {
+            var splitItems = financialDataItemIds.Split(',').OrderBy(x => x).ToList();
+            if (onlyStatisticChildren == 0)
+            {
+                return splitItems;
+            }
+            var result = new List<string>();
+            foreach (var splitItem in splitItems)
+            {
+                var children = financialDataItems.Where(x=>x.ParentId.ToString() == splitItem).ToList();
+                if (children.Count == 0)
+                {
+                    result.Add(splitItem);
+                }
+                else
+                {
+                    result.AddRange(children.Select(x => x.ItemId.ToString()));
+                }
+            }
+            return result.OrderBy(x => x).ToList();
         }
     }
 }

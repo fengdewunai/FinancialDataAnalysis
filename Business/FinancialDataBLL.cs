@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using IBusiness;
 using IDataAccess;
+using Model;
 using Model.DataModel;
+using Model.Response;
 
 namespace Business
 {
@@ -91,6 +93,18 @@ namespace Business
         public List<FinancialDataModel> GetFinancialDataByFilter(FinancialDataModel filter)
         {
             return _financialDataDal.GetFinancialDataByFilter(filter);
+        }
+
+        /// <summary>
+        /// GetFinancialDataByPaging
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="totalCount"></param>
+        /// <returns></returns>
+        public List<GetFinancialDataByPagingResponse> GetFinancialDataByPaging(GetFinancialDataByPagingRequest request,
+            out int totalCount)
+        {
+            return _financialDataDal.GetFinancialDataByPaging(request, out totalCount);
         }
 
         /// <summary>

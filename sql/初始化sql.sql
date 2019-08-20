@@ -237,3 +237,59 @@ BEGIN
     and (v_QiJianTypeId = 0 or QiJianTypeId=v_QiJianTypeId)
     ;
 END$$
+
+DROP PROCEDURE IF EXISTS FinancialData_GetDetailByPaging$$
+CREATE PROCEDURE `FinancialData_GetDetailByPaging`(
+	v_ExcelRecordId int,
+	v_AccountCode varchar(50),
+	v_QiJianTypeId tinyint,
+	v_XiangMuTypeId tinyint,
+	v_XiangMuItemId varchar(4000),
+	v_PageIndex	INT,
+	v_PageSize	INT,
+	OUT v_TotalCount INT
+)
+    SQL SECURITY INVOKER
+BEGIN
+
+set @sqlcount=' select count(d.FinancialDataId) INTO @TotalCount ';
+set @sqlcol=concat(' SELECT 
+						d.FinancialDataId as financialdataid,
+						a.AccountName as accountname, 
+						shiyebu.ItemName as shiyebu,
+						pianqu.ItemName as pianqu,
+						xingzhi.ItemName as xingzhi,
+						xiangmu.ItemName as xiangmu,
+						d.data as detaildata ');
+set @fromStr=' FROM financialdataanalysis.financialdata d
+			left join financialdataitem shiyebu on d.excelrecordid=shiyebu.excelrecordid and d.ShiYeBuId = shiyebu.ItemId
+			left join financialdataitem pianqu on d.excelrecordid=pianqu.excelrecordid and d.PianQuId = pianqu.ItemId
+			left join financialdataitem xingzhi on d.excelrecordid=xingzhi.excelrecordid and d.PianQuId = xingzhi.ItemId
+			left join financialdataitem xiangmu on d.excelrecordid=xiangmu.excelrecordid and d.PianQuId = xiangmu.ItemId
+			left join accountitem a on d.excelrecordid = a.excelrecordid and a.AccountCode = d.AccountCode ';
+set @whereStr = concat('where d.excelrecordid = ',v_ExcelRecordId,' and d.AccountCode="',v_AccountCode,'" and d.QiJianTypeId=',v_QiJianTypeId);
+
+if v_XiangMuTypeId = 1
+	then set @whereStr=concat(@whereStr,' and d.ShiYeBuId in (',v_XiangMuItemId,')' );
+elseif v_XiangMuTypeId = 2
+	then set @whereStr=concat(@whereStr,' and d.ShiYeBuId = ',v_XiangMuItemId );
+elseif v_XiangMuTypeId = 3
+	then set @whereStr=concat(@whereStr,' and d.PianQuId = ',v_XiangMuItemId );
+elseif v_XiangMuTypeId = 4
+	then set @whereStr=concat(@whereStr,' and d.XingZhiId = ',v_XiangMuItemId );
+elseif v_XiangMuTypeId = 5
+	then set @whereStr=concat(@whereStr,' and d.XiangMuIdId = ',v_XiangMuItemId );
+end if;
+
+set @sqlOrder=concat(' ORDER BY d.ShiYeBuId,d.PianQuId,d.XingZhiId,d.XiangMuIdId LIMIT ',v_PageIndex,',',v_PageSize);
+
+set @sqlcount=concat(@sqlcount,@fromStr, @whereStr);
+PREPARE sqlcommend from @sqlcount;
+execute sqlcommend;
+select @TotalCount  into v_TotalCount;
+
+set @sqlstr=concat(@fromStr,@fromStr, @whereStr,@sqlOrder);
+PREPARE sqlcommend from @sqlstr;
+execute sqlcommend;
+
+END$$

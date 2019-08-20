@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Common;
 using IDataAccess;
+using Model;
 using Model.DataModel;
+using Model.Response;
 
 namespace DataAcess
 {
@@ -100,6 +102,28 @@ namespace DataAcess
                 .Parameter("v_AccountCode", filter.AccountCode)
                 .Parameter("v_QiJianTypeId", filter.QiJianTypeId)
                 .QueryMany<FinancialDataModel>();
+        }
+
+        /// <summary>
+        /// GetFinancialDataByPaging
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="totalCount"></param>
+        /// <returns></returns>
+        public List<GetFinancialDataByPagingResponse> GetFinancialDataByPaging(GetFinancialDataByPagingRequest request, out int totalCount)
+        {
+            var store = CurrentConnectStringContext.StoredProcedure("FinancialData_GetDetailByPaging")
+                .Parameter("v_ExcelRecordId", request.ExcelRecordId)
+                .Parameter("v_AccountCode", request.AccountCode)
+                .Parameter("v_QiJianTypeId", request.QiJianTypeId)
+                .Parameter("v_XiangMuTypeId", request.XiangMuTypeId)
+                .Parameter("v_XiangMuItemId", request.XiangMuItemId)
+                .Parameter("v_PageIndex", request.PageIndex)
+                .Parameter("v_PageSize", request.PageSize)
+                .ParameterOut("v_TotalCount", DataTypes.Int32);
+            var result = store.QueryMany<GetFinancialDataByPagingResponse>();
+            totalCount = store.ParameterValue<int>("v_TotalCount");
+            return result;
         }
 
         /// <summary>

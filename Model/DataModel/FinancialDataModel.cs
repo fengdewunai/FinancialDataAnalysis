@@ -14,7 +14,7 @@ namespace Model.DataModel
         /// <summary>
         /// 主键
         /// </summary>
-        public int FinancialDataId { get; set; }
+        public long FinancialDataId { get; set; }
 
         /// <summary>
         /// 所属excel

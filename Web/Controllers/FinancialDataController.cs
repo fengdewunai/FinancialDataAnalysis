@@ -42,9 +42,18 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult GetExcelList()
         {
-            var action = new GetExcelListAction(_financialDataBll);
-            var result = action.Process();
-            return Json(result);
+            try
+            {
+                var action = new GetExcelListAction(_financialDataBll);
+                var result = action.Process();
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Write("获取科目树出错", MessageType.Error, typeof(FinancialDataController), ex);
+                return Json(new SuccessModel());
+            }
+            
         }
 
         /// <summary>
@@ -55,9 +64,18 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult GetAccountItemTreeData(string id, int excelId)
         {
-            var action = new GetAccountItemTreeDataAction(_financialDataBll);
-            var result = action.Process(id, excelId);
-            return Json(result);
+            try
+            {
+                var action = new GetAccountItemTreeDataAction(_financialDataBll);
+                var result = action.Process(id, excelId);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Write("获取科目树出错", MessageType.Error, typeof(FinancialDataController), ex);
+                return Json(new SuccessModel());
+            }
+            
         }
 
         /// <summary>
@@ -70,9 +88,18 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult GetFinancialDataItemTreeData(string id, int excelId, int treeTypeId)
         {
-            var action = new GetFinancialDataItemTreeDataAction(_financialDataBll);
-            var result = action.Process(id, excelId, treeTypeId);
-            return Json(result);
+            try
+            {
+                var action = new GetFinancialDataItemTreeDataAction(_financialDataBll);
+                var result = action.Process(id, excelId, treeTypeId);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Write("获取项目树出错", MessageType.Error, typeof(FinancialDataController), ex);
+                return Json(new SuccessModel());
+            }
+            
         }
 
         /// <summary>
@@ -84,11 +111,20 @@ namespace Web.Controllers
         /// <param name="qiJianTypeId">会计期间类型</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetFinancialDataGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId = 1)
+        public ActionResult GetFinancialDataGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId = 1, int onlyStatisticChildren = 0)
         {
-            var action = new GetFinancialDataGridDataAction(_financialDataExtendBll);
-            var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId);
-            return Json(result);
+            try
+            {
+                var action = new GetFinancialDataGridDataAction(_financialDataExtendBll);
+                var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Write("获取grid数据出错", MessageType.Error, typeof(FinancialDataController), ex);
+                return Json(new SuccessModel());
+            }
+            
         }
 
         /// <summary>
@@ -97,11 +133,20 @@ namespace Web.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetFinancialDataGridColumns(int excelId, string financialDataItemIds)
+        public ActionResult GetFinancialDataGridColumns(int excelId, string financialDataItemIds, int onlyStatisticChildren = 0)
         {
-            var action = new GetFinancialDataGridColumnsAction(_financialDataExtendBll);
-            var result = action.Process(excelId, financialDataItemIds);
-            return Json(result);
+            try
+            {
+                var action = new GetFinancialDataGridColumnsAction(_financialDataExtendBll);
+                var result = action.Process(excelId, financialDataItemIds, onlyStatisticChildren);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Write("获取数据表头数据出错", MessageType.Error, typeof(FinancialDataController), ex);
+                return Json(new SuccessModel());
+            }
+            
         }
 
         /// <summary>
@@ -134,11 +179,39 @@ namespace Web.Controllers
         /// <param name="financialDataItemIds">项目id集合</param>
         /// <param name="qiJianTypeId">会计期间类型</param>
         /// <returns></returns>
-        public FileResult ExportExcel(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId = 1)
+        public FileResult ExportExcel(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId = 1, int onlyStatisticChildren=0)
         {
-            var action = new ExportExcelAction(_financialDataBll, _financialDataExtendBll);
-            var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId);
-            return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("统计数据_{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmss")));
+            try
+            {
+                var action = new ExportExcelAction(_financialDataBll, _financialDataExtendBll);
+                var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren);
+                return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("统计数据_{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmss")));
+            }
+            catch (Exception ex)
+            {
+                Log.Write("获取数据出错", MessageType.Error, typeof(FinancialDataController), ex);
+                return null;
+            }
+            
+        }
+
+        /// <summary>
+        /// 反查数据
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult PeggingFinancialData(GetFinancialDataByPagingRequest request)
+        {
+            try
+            {
+                var action = new PeggingFinancialDataAction(_financialDataBll);
+                var result = action.Process(request);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Write("反查数据出错", MessageType.Error, typeof(FinancialDataController), ex);
+                return Json(new SuccessModel());
+            }
         }
     }
 }

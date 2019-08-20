@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Model;
 using Model.DataModel;
+using Model.Response;
 
 namespace IDataAccess
 {
@@ -55,6 +57,14 @@ namespace IDataAccess
         /// <param name="filter"></param>
         /// <returns></returns>
         List<FinancialDataModel> GetFinancialDataByFilter(FinancialDataModel filter);
+
+        /// <summary>
+        /// GetFinancialDataByPaging
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="totalCount"></param>
+        /// <returns></returns>
+        List<GetFinancialDataByPagingResponse> GetFinancialDataByPaging(GetFinancialDataByPagingRequest request, out int totalCount);
 
         /// <summary>
         /// BatchInsertFinancialData

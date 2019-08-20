@@ -34,7 +34,7 @@ namespace Web
                 "~/Scripts/extBase/BaseGrid.js"
             ));
 
-            bundles.Add(new StyleBundle("~/Content/extCss").Include(
+            bundles.Add(new StyleBundle("~/Scripts/ext4.2/resources/ext-theme-classic/css").Include(
                 "~/Scripts/ext4.2/resources/css/ext-all.css",
                 "~/Scripts/ext4.2/resources/ext-theme-classic/ext-theme-classic-all.css"
             ));
