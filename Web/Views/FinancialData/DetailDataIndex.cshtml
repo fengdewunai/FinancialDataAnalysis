@@ -3,6 +3,7 @@
     ViewBag.Title = "DetailDataIndex";
 }
 
+<script type="text/javascript" src="/Scripts/FinancialData/DetailDataIndex/PeggingFinancialDataGrid.js"></script>
 <script>
     var excelId = @ViewBag.excelId;
     Ext.onReady(function() {
@@ -52,6 +53,7 @@
                     tbar: [{
                         xtype: 'radiogroup',
                         name: 'TreeTypeRadioGroup',
+                        id:'TreeTypeRadioGroup',
                         width: 150,
                         items: [
                             { boxLabel: '片区', name: 'TreeTypeRadio', inputValue: '1', checked:true}, 
@@ -92,18 +94,31 @@
                         { boxLabel: '本月', name: 'GridQiJianRadio', inputValue: '2' }
                     ]
                 },"-",
-                { text: '统计选中项', iconCls: "Add", handler: LoadGridData }, "-",
                 {
                     xtype : 'checkboxgroup',
-                    width : 150,
+                    width : 100,
                     columns : 1, // 在上面定义的宽度上展示3列
                     items : [{
                         boxLabel : '只统计下级',
                         id: 'onlyChildrenCheckBox',
                         name: 'onlyChildrenCheckBox'
                     }]
-                },
-                "->", { iconCls: "a_search", text: "导出Excel", handler: ExportExcel }]
+                }, "-",
+                { text: '统计选中项', iconCls: "Add", handler: LoadGridData },
+                "->", { iconCls: "a_search", text: "导出Excel", handler: ExportExcel },
+                "-", { iconCls: "a_search", text: "返回列表", handler: function () { location.href = "\\"; } }],
+            listeners: {
+                "celldblclick": function(me, td, cellIndex, record, tr, rowIndex, e, eOpts,a,b,c) {
+                    var accountCode = record.data.AccountCode;
+                    if (accountCode == "0") {
+                        Ext.MessageBox.alert("提示", "统计项不支持反查");
+                        return;
+                    }
+                    var xiangMuItemId = grid.columnManager.columns[cellIndex].dataIndex;
+                    var qiJianTypeId = Ext.getCmp("GridQiJianRadioGroup").getValue().GridQiJianRadio;
+                    PeggingFinancialDataFunc(excelId, accountCode, qiJianTypeId, xiangMuItemId);
+                }
+            }
         });
 
         var panel = new Ext.Viewport({
@@ -119,7 +134,8 @@
         function LoadGridData() {
             var accountItemIds = accountTree.getSelectedNodes().join(',');
             var financialDataItemIds = financialDataItemTree.getSelectedNodes().join(',');
-            var qiJianTypeId = Ext.getCmp("GridQiJianRadioGroup").getValue();
+            var qiJianTypeId = Ext.getCmp("GridQiJianRadioGroup").getValue().GridQiJianRadio;
+            var xiangMuTreeTypeId = Ext.getCmp("TreeTypeRadioGroup").getValue().TreeTypeRadio;
             var onlyStatisticChildren = 0;
             if (Ext.getCmp("onlyChildrenCheckBox").checked) {
                 onlyStatisticChildren = 1;
@@ -130,6 +146,7 @@
                 params : {
                     excelId: excelId,
                     financialDataItemIds: financialDataItemIds,
+                    xiangMuTreeTypeId: xiangMuTreeTypeId,
                     onlyStatisticChildren: onlyStatisticChildren
                 },
                 success: function (response, options) {
@@ -141,7 +158,10 @@
                         pageSize: 100
                     });
                     grid.reconfigure(newstore, newcolumns);  //定义grid的store和column   
-                    newstore.loadWithParams({ excelId: excelId, accountItemIds: accountItemIds, financialDataItemIds: financialDataItemIds, qiJianTypeId: qiJianTypeId, onlyStatisticChildren: onlyStatisticChildren});
+                    newstore.loadWithParams({
+                        excelId: excelId, accountItemIds: accountItemIds, financialDataItemIds: financialDataItemIds,
+                        qiJianTypeId: qiJianTypeId, onlyStatisticChildren: onlyStatisticChildren, xiangMuTreeTypeId: xiangMuTreeTypeId
+                    });
                 },
                 failure : function() {
                 }
@@ -153,12 +173,15 @@
             Ext.MessageBox.wait("正在生成Excel", "等待");
             var accountItemIds = accountTree.getSelectedNodes().join(',');
             var financialDataItemIds = financialDataItemTree.getSelectedNodes().join(',');
-            var qiJianTypeId = Ext.getCmp("GridQiJianRadioGroup").getValue();
+            var qiJianTypeId = Ext.getCmp("GridQiJianRadioGroup").getValue().GridQiJianRadio;
+            var xiangMuTreeTypeId = Ext.getCmp("TreeTypeRadioGroup").getValue().TreeTypeRadio;
             var onlyStatisticChildren = 0;
             if (Ext.getCmp("onlyChildrenCheckBox").checked) {
                 onlyStatisticChildren = 1;
             }
-            location.href = "/FinancialData/ExportExcel?excelId=" + excelId + "&accountItemIds=" + accountItemIds + "&financialDataItemIds=" + financialDataItemIds + "&qiJianTypeId=" + qiJianTypeId + "&onlyStatisticChildren=" + onlyStatisticChildren;
+            location.href = "/FinancialData/ExportExcel?excelId=" + excelId + "&accountItemIds=" + accountItemIds
+                + "&financialDataItemIds=" + financialDataItemIds + "&qiJianTypeId=" + qiJianTypeId
+                + "&onlyStatisticChildren=" + onlyStatisticChildren + "&xiangMuTreeTypeId=" + xiangMuTreeTypeId;
             Ext.MessageBox.hide();
         }
     });

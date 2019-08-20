@@ -34,14 +34,16 @@ namespace Business
         /// </summary>
         /// <param name="excelId"></param>
         /// <param name="financialDataItemIds"></param>
+        /// <param name="xiangMuTreeTypeId"></param>
+        /// <param name="onlyStatisticChildren"></param>
         /// <returns></returns>
-        public GridColumnsModel GetGridColumns(int excelId, string financialDataItemIds, int onlyStatisticChildren)
+        public GridColumnsModel GetGridColumns(int excelId, string financialDataItemIds, int onlyStatisticChildren, int xiangMuTreeTypeId)
         {
             var result = new GridColumnsModel() { GridColumns = new List<GridColumnsDetail>(), StoreFields = new List<string>() };
-            var financialDataItems = _financialDataBll.GetFinancialDataItemByExcelRecordId(excelId);
+            var financialDataItems = _financialDataBll.GetFinancialDataItemByExcelRecordId(excelId, xiangMuTreeTypeId);
             var financialDataItemIdList = GetFinancialDataItemIdList(financialDataItemIds,onlyStatisticChildren, financialDataItems);
-            result.GridColumns.Add(new GridColumnsDetail() { text = "科目编号", dataIndex = "AccountCode", hidden = true, renderer = " function (v, cellmeta, record, rowIndex, columnIndex, store) { return v;}" });
-            result.GridColumns.Add(new GridColumnsDetail() { text = "项目名称", dataIndex = "AccountName", width = 120, renderer = " function (v, cellmeta, record, rowIndex, columnIndex, store) { return v;}" });
+            result.GridColumns.Add(new GridColumnsDetail() { text = "科目编号", dataIndex = "AccountCode", hidden = true });
+            result.GridColumns.Add(new GridColumnsDetail() { text = "项目名称", dataIndex = "AccountName", width = 120 });
             result.StoreFields.Add("AccountCode");
             result.StoreFields.Add("AccountName");
             foreach (var financialDataItemId in financialDataItemIdList)
@@ -51,8 +53,7 @@ namespace Business
                 {
                     text = financialDataItem.ItemName.ToString(),
                     dataIndex = financialDataItem.ItemId.ToString(),
-                    width = 120,
-                    renderer = " function (v, cellmeta, record, rowIndex, columnIndex, store) { return RendererGridData(v, cellmeta, record, rowIndex, columnIndex, store);}"
+                    width = 120
                 });
                 result.StoreFields.Add(financialDataItem.ItemId.ToString());
             }
@@ -68,7 +69,7 @@ namespace Business
         /// <param name="qiJianTypeId">期间类型</param>
         /// <param name="onlyStatisticChildren">是否只统计下级项目</param>
         /// <returns></returns>
-        public DynamicGridDataModel GetGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId, int onlyStatisticChildren)
+        public DynamicGridDataModel GetGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId, int onlyStatisticChildren, int xiangMuTreeTypeId)
         {
             var gridData = new DynamicGridDataModel() { rows = new List<Dictionary<string, string>>() };
             var shouRuDatas = new List<Dictionary<string, string>>();
@@ -79,7 +80,7 @@ namespace Business
             });
             datas = datas.Where(x => x.QiJianTypeId == qiJianTypeId).ToList();
             var accountItems = _financialDataBll.GetAccountByExcelRecordId(excelId);
-            var financialDataItems = _financialDataBll.GetFinancialDataItemByExcelRecordId(excelId);
+            var financialDataItems = _financialDataBll.GetFinancialDataItemByExcelRecordId(excelId, xiangMuTreeTypeId);
             var accountItemIdList = accountItemIds.Split(',').OrderBy(x => x).ToList();
             var financialDataItemIdList = GetFinancialDataItemIdList(financialDataItemIds, onlyStatisticChildren, financialDataItems);
             gridData.total = accountItemIdList.Count;

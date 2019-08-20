@@ -118,8 +118,8 @@ namespace DataAcess
                 .Parameter("v_QiJianTypeId", request.QiJianTypeId)
                 .Parameter("v_XiangMuTypeId", request.XiangMuTypeId)
                 .Parameter("v_XiangMuItemId", request.XiangMuItemId)
-                .Parameter("v_PageIndex", request.PageIndex)
-                .Parameter("v_PageSize", request.PageSize)
+                .Parameter("v_PageIndex", request.Page)
+                .Parameter("v_PageSize", request.Limit)
                 .ParameterOut("v_TotalCount", DataTypes.Int32);
             var result = store.QueryMany<GetFinancialDataByPagingResponse>();
             totalCount = store.ParameterValue<int>("v_TotalCount");

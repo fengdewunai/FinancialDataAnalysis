@@ -73,7 +73,7 @@ BEGIN
 	THEN
 		create table FinancialData
 		(
-		   FinancialDataId      int not null auto_increment,
+		   FinancialDataId      bigint not null auto_increment,
 		   ExcelRecordId        int comment '所属excel',
 		   XiangMuIdId          int comment '项目Id',
 		   XingZhiId            int comment '性质',
@@ -264,8 +264,8 @@ set @sqlcol=concat(' SELECT
 set @fromStr=' FROM financialdataanalysis.financialdata d
 			left join financialdataitem shiyebu on d.excelrecordid=shiyebu.excelrecordid and d.ShiYeBuId = shiyebu.ItemId
 			left join financialdataitem pianqu on d.excelrecordid=pianqu.excelrecordid and d.PianQuId = pianqu.ItemId
-			left join financialdataitem xingzhi on d.excelrecordid=xingzhi.excelrecordid and d.PianQuId = xingzhi.ItemId
-			left join financialdataitem xiangmu on d.excelrecordid=xiangmu.excelrecordid and d.PianQuId = xiangmu.ItemId
+			left join financialdataitem xingzhi on d.excelrecordid=xingzhi.excelrecordid and d.XingZhiId = xingzhi.ItemId
+			left join financialdataitem xiangmu on d.excelrecordid=xiangmu.excelrecordid and d.XiangMuIdId = xiangmu.ItemId
 			left join accountitem a on d.excelrecordid = a.excelrecordid and a.AccountCode = d.AccountCode ';
 set @whereStr = concat('where d.excelrecordid = ',v_ExcelRecordId,' and d.AccountCode="',v_AccountCode,'" and d.QiJianTypeId=',v_QiJianTypeId);
 
@@ -288,7 +288,7 @@ PREPARE sqlcommend from @sqlcount;
 execute sqlcommend;
 select @TotalCount  into v_TotalCount;
 
-set @sqlstr=concat(@fromStr,@fromStr, @whereStr,@sqlOrder);
+set @sqlstr=concat(@sqlcol,@fromStr, @whereStr,@sqlOrder);
 PREPARE sqlcommend from @sqlstr;
 execute sqlcommend;
 

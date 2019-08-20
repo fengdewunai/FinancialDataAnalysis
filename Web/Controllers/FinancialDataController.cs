@@ -111,12 +111,12 @@ namespace Web.Controllers
         /// <param name="qiJianTypeId">会计期间类型</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetFinancialDataGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId = 1, int onlyStatisticChildren = 0)
+        public ActionResult GetFinancialDataGridData(int excelId, string accountItemIds, string financialDataItemIds, int xiangMuTreeTypeId, int qiJianTypeId = 1, int onlyStatisticChildren = 0)
         {
             try
             {
                 var action = new GetFinancialDataGridDataAction(_financialDataExtendBll);
-                var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren);
+                var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren, xiangMuTreeTypeId);
                 return Json(result);
             }
             catch (Exception ex)
@@ -130,15 +130,18 @@ namespace Web.Controllers
         /// <summary>
         /// 获取数据表头数据
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="excelId"></param>
+        /// <param name="financialDataItemIds"></param>
+        /// <param name="xiangMuTreeTypeId">1:片区，2：性质</param>
+        /// <param name="onlyStatisticChildren"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetFinancialDataGridColumns(int excelId, string financialDataItemIds, int onlyStatisticChildren = 0)
+        public ActionResult GetFinancialDataGridColumns(int excelId, string financialDataItemIds, int xiangMuTreeTypeId, int onlyStatisticChildren = 0)
         {
             try
             {
                 var action = new GetFinancialDataGridColumnsAction(_financialDataExtendBll);
-                var result = action.Process(excelId, financialDataItemIds, onlyStatisticChildren);
+                var result = action.Process(excelId, financialDataItemIds, xiangMuTreeTypeId, onlyStatisticChildren);
                 return Json(result);
             }
             catch (Exception ex)
@@ -179,12 +182,12 @@ namespace Web.Controllers
         /// <param name="financialDataItemIds">项目id集合</param>
         /// <param name="qiJianTypeId">会计期间类型</param>
         /// <returns></returns>
-        public FileResult ExportExcel(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId = 1, int onlyStatisticChildren=0)
+        public FileResult ExportExcel(int excelId, string accountItemIds, string financialDataItemIds, int xiangMuTreeTypeId, int qiJianTypeId = 1, int onlyStatisticChildren=0)
         {
             try
             {
                 var action = new ExportExcelAction(_financialDataBll, _financialDataExtendBll);
-                var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren);
+                var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren, xiangMuTreeTypeId);
                 return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("统计数据_{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmss")));
             }
             catch (Exception ex)

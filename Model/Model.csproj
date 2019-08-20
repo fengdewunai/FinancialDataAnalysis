@@ -50,6 +50,7 @@
     <Compile Include="Enum\FinancialDataItemTypeEnum.cs" />
     <Compile Include="ExcelDataModel.cs" />
     <Compile Include="ExcelExportRequest.cs" />
+    <Compile Include="GridBaseResponse.cs" />
     <Compile Include="Request\GetFinancialDataByPagingRequest.cs" />
     <Compile Include="GridColumnsModel.cs" />
     <Compile Include="PageRequest.cs" />

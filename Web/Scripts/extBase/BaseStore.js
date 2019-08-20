@@ -30,6 +30,6 @@
         var me = this;
         me.baseParams = Ext.apply(me.baseParams, config || {});
         Ext.apply(me.proxy.extraParams, config || {});
-        me.load();
+        me.loadPage(1);
     }
 });　　

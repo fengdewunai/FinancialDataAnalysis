@@ -55,11 +55,6 @@ namespace Model
         public bool hidden { get; set; }
 
         /// <summary>
-        /// 渲染单元格
-        /// </summary>
-        public string renderer { get; set; }
-
-        /// <summary>
         /// 日期格式化
         /// </summary>
         public List<GridColumnsModel> columns { get; set; }

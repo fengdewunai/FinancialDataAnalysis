@@ -43,7 +43,7 @@ namespace IBusiness
         /// </summary>
         /// <param name="excelRecordId"></param>
         /// <returns></returns>
-        List<FinancialDataItemModel> GetFinancialDataItemByExcelRecordId(int excelRecordId);
+        List<FinancialDataItemModel> GetFinancialDataItemByExcelRecordId(int excelRecordId, int xiangMuTreeTypeId = 0);
 
         /// <summary>
         /// BatchInsertFinancialDataItem

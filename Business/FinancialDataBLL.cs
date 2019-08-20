@@ -7,6 +7,7 @@ using IBusiness;
 using IDataAccess;
 using Model;
 using Model.DataModel;
+using Model.Enum;
 using Model.Response;
 
 namespace Business
@@ -71,9 +72,22 @@ namespace Business
         /// </summary>
         /// <param name="excelRecordId"></param>
         /// <returns></returns>
-        public List<FinancialDataItemModel> GetFinancialDataItemByExcelRecordId(int excelRecordId)
+        public List<FinancialDataItemModel> GetFinancialDataItemByExcelRecordId(int excelRecordId, int xiangMuTreeTypeId = 0)
         {
-            return _financialDataDal.GetFinancialDataItemByExcelRecordId(excelRecordId);
+            var result = _financialDataDal.GetFinancialDataItemByExcelRecordId(excelRecordId);
+            if (xiangMuTreeTypeId == 0)
+            {
+                return result;
+            }
+            if (xiangMuTreeTypeId == 1)
+            {
+                result = result.Where(x => x.ItemTypeId != (int)FinancialDataItemTypeEnum.XingZhi).ToList();
+            }
+            else
+            {
+                result = result.Where(x => x.ItemTypeId != (int)FinancialDataItemTypeEnum.PianQu).ToList();
+            }
+            return result;
         }
 
         /// <summary>

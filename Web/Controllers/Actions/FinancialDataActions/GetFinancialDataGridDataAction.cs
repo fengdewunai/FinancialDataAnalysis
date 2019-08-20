@@ -30,9 +30,9 @@ namespace Web.Controllers.Actions.FinancialDataActions
         /// <param name="financialDataItemIds"></param>
         /// <param name="qiJianTypeId"></param>
         /// <returns></returns>
-        public DynamicGridDataModel Process(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId, int onlyStatisticChildren)
+        public DynamicGridDataModel Process(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId, int onlyStatisticChildren, int xiangMuTreeTypeId)
         {
-            return _financialDataExtendBLL.GetGridData(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren);
+            return _financialDataExtendBLL.GetGridData(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren, xiangMuTreeTypeId);
         }
 
         

@@ -31,11 +31,11 @@ namespace Web.Controllers.Actions.FinancialDataActions
         /// <param name="financialDataItemIds"></param>
         /// <param name="qiJianTypeId"></param>
         /// <returns></returns>
-        public Stream Process(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId, int onlyStatisticChildren)
+        public Stream Process(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId, int onlyStatisticChildren, int xiangMuTreeTypeId)
         {
             var result = new List<List<string>>();
-            var columnData = _financialDataExtendBLL.GetGridColumns(excelId, financialDataItemIds, onlyStatisticChildren);
-            var gridData = _financialDataExtendBLL.GetGridData(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren);
+            var columnData = _financialDataExtendBLL.GetGridColumns(excelId, financialDataItemIds, onlyStatisticChildren, xiangMuTreeTypeId);
+            var gridData = _financialDataExtendBLL.GetGridData(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren, xiangMuTreeTypeId);
             var columnList = new List<string>();
             foreach (var gridColumn in columnData.GridColumns)
             {

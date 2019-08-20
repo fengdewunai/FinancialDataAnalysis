@@ -136,61 +136,68 @@ namespace Web.Controllers.Actions.FinancialDataActions
             var notEmptyShiYeBuGroup = notEmptyPianQuItems.GroupBy(x => x.ShiYeBuName);
             FillShiYeBuInfo(notEmptyShiYeBuGroup, financialDataItems, ref id, 0, 1);
 
-            // 片区
-            var pianQuGroup = notEmptyPianQuItems.GroupBy(x => x.PianQuName);
-            foreach (var group in pianQuGroup)
+            foreach (var shiYeBugroup in emptyShiYeBuGroup)
             {
-                var datasInPianQu = group.ToList();
-                var pianQuModel = new FinancialDataItemModel()
+                //性质
+                var emptyXingZhiGroup = shiYeBugroup.ToList().GroupBy(x => x.XingZhiName);
+                foreach (var group in emptyXingZhiGroup)
                 {
-                    ItemId = id++,
-                    ItemName = datasInPianQu[0].PianQuName,
-                    ParentId = datasInPianQu[0].ShiYeBuId,
-                    ItemLevel = 2,
-                    ItemTypeId = (int)FinancialDataItemTypeEnum.PianQu
-                };
-                financialDataItems.Add(pianQuModel);
-                foreach (var item in datasInPianQu)
-                {
-                    item.PianQuId = pianQuModel.ItemId;
+                    var datasInXingZhi = group.ToList();
+                    var xingZhiModel = new FinancialDataItemModel()
+                    {
+                        ItemId = id++,
+                        ItemName = datasInXingZhi[0].XingZhiName,
+                        ParentId = datasInXingZhi[0].ShiYeBuId,
+                        ItemLevel = 3,
+                        ItemTypeId = (int)FinancialDataItemTypeEnum.XingZhi
+                    };
+                    financialDataItems.Add(xingZhiModel);
+                    foreach (var item in datasInXingZhi)
+                    {
+                        item.XingZhiId = xingZhiModel.ItemId;
+                    }
                 }
             }
 
-            //性质
-            var emptyXingZhiGroup = emptyPianQuItems.GroupBy(x => x.XingZhiName);
-            foreach (var group in emptyXingZhiGroup)
+            foreach (var shiYeBugroup in notEmptyShiYeBuGroup)
             {
-                var datasInXingZhi = group.ToList();
-                var xingZhiModel = new FinancialDataItemModel()
+                // 片区
+                var pianQuGroup = shiYeBugroup.ToList().GroupBy(x => x.PianQuName);
+                foreach (var group in pianQuGroup)
                 {
-                    ItemId = id++,
-                    ItemName = datasInXingZhi[0].XingZhiName,
-                    ParentId = datasInXingZhi[0].ShiYeBuId,
-                    ItemLevel = 3,
-                    ItemTypeId = (int)FinancialDataItemTypeEnum.XingZhi
-                };
-                financialDataItems.Add(xingZhiModel);
-                foreach (var item in datasInXingZhi)
-                {
-                    item.XingZhiId = xingZhiModel.ItemId;
+                    var datasInPianQu = group.ToList();
+                    var pianQuModel = new FinancialDataItemModel()
+                    {
+                        ItemId = id++,
+                        ItemName = datasInPianQu[0].PianQuName,
+                        ParentId = datasInPianQu[0].ShiYeBuId,
+                        ItemLevel = 2,
+                        ItemTypeId = (int)FinancialDataItemTypeEnum.PianQu
+                    };
+                    financialDataItems.Add(pianQuModel);
+                    foreach (var item in datasInPianQu)
+                    {
+                        item.PianQuId = pianQuModel.ItemId;
+                    }
                 }
-            }
-            var notEmptyXingZhiGroup = notEmptyPianQuItems.GroupBy(x => x.XingZhiName);
-            foreach (var group in notEmptyXingZhiGroup)
-            {
-                var datasInXingZhi = group.ToList();
-                var xingZhiModel = new FinancialDataItemModel()
+                //性质
+                var notEmptyXingZhiGroup = shiYeBugroup.ToList().GroupBy(x => x.XingZhiName);
+                foreach (var group in notEmptyXingZhiGroup)
                 {
-                    ItemId = id++,
-                    ItemName = datasInXingZhi[0].XingZhiName,
-                    ParentId = datasInXingZhi[0].ShiYeBuId,
-                    ItemLevel = 2,
-                    ItemTypeId = (int)FinancialDataItemTypeEnum.XingZhi
-                };
-                financialDataItems.Add(xingZhiModel);
-                foreach (var item in datasInXingZhi)
-                {
-                    item.XingZhiId = xingZhiModel.ItemId;
+                    var datasInXingZhi = group.ToList();
+                    var xingZhiModel = new FinancialDataItemModel()
+                    {
+                        ItemId = id++,
+                        ItemName = datasInXingZhi[0].XingZhiName,
+                        ParentId = datasInXingZhi[0].ShiYeBuId,
+                        ItemLevel = 2,
+                        ItemTypeId = (int)FinancialDataItemTypeEnum.XingZhi
+                    };
+                    financialDataItems.Add(xingZhiModel);
+                    foreach (var item in datasInXingZhi)
+                    {
+                        item.XingZhiId = xingZhiModel.ItemId;
+                    }
                 }
             }
 

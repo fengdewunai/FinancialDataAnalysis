@@ -23,9 +23,15 @@ var peggingFinancialDataWin = Ext.create("Ext.window.Window",
         modal: true,
         constrainHeader: true,
         resizable: false,
-        height: 700,
+        height: 600,
         width: 1000,
         layout: "fit",
         items: [peggingFinancialDataGrid],
         closeAction: 'hide' //close 关闭  hide  隐藏
     });
+
+// 反查数据方法
+function PeggingFinancialDataFunc(excelId, accountCode, qiJianTypeId, xiangMuItemId) {
+    peggingFinancialDataWin.show();
+    peggingFinancialDataGrid.store.loadWithParams({ ExcelRecordId: excelId, AccountCode: accountCode, QiJianTypeId: qiJianTypeId, XiangMuItemId: xiangMuItemId});
+}

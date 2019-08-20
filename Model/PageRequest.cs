@@ -14,12 +14,12 @@ namespace Model
         /// <summary>
         /// 每页数据条数
         /// </summary>
-        public int PageSize { get; set; }
+        public int Limit { get; set; }
 
         /// <summary>
         /// 页码索引
         /// </summary>
-        public int PageIndex { get; set; }
+        public int Page { get; set; }
 
         /// <summary>
         /// 跳过页数
@@ -28,7 +28,7 @@ namespace Model
         {
             get
             {
-                return (PageIndex - 1) * PageSize;
+                return (Page - 1) * Limit;
             }
         }
 

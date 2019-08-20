@@ -27,28 +27,31 @@ namespace Web.Controllers.Actions.FinancialDataActions
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public List<GetFinancialDataByPagingResponse> Process(GetFinancialDataByPagingRequest request)
+        public GridBaseResponsek<List<GetFinancialDataByPagingResponse>> Process(GetFinancialDataByPagingRequest request)
         {
+            var result = new GridBaseResponsek<List<GetFinancialDataByPagingResponse>>();
             var bllRequest = new GetFinancialDataByPagingRequest()
             {
                 AccountCode = request.AccountCode,
                 ExcelRecordId = request.ExcelRecordId,
                 QiJianTypeId = request.QiJianTypeId,
                 XiangMuItemId = request.XiangMuItemId,
-                PageSize = request.PageSize,
-                PageIndex = (request.PageIndex - 1) * request.PageSize
+                Limit = request.Limit,
+                Page = (request.Page - 1) * request.Limit
             };
             var financialDataItems = _financialDataBll.GetFinancialDataItemByExcelRecordId(request.ExcelRecordId);
             var dataItem = financialDataItems.FirstOrDefault(x => x.ItemId.ToString() == request.XiangMuItemId);
-            request.XiangMuTypeId = dataItem.ItemTypeId;
+            bllRequest.XiangMuTypeId = dataItem.ItemTypeId;
             if (dataItem.ItemTypeId == (int) FinancialDataItemTypeEnum.XuNiJiTuan)
             {
                 var children = financialDataItems.Where(x => x.ParentId == dataItem.ItemId);
-                request.XiangMuItemId = string.Join(",", children.Select(x => x.ItemId).ToList());
+                bllRequest.XiangMuItemId = string.Join(",", children.Select(x => x.ItemId).ToList());
             }
 
             var totalCount = 0;
-            var result = _financialDataBll.GetFinancialDataByPaging(bllRequest, out totalCount);
+            var datas = _financialDataBll.GetFinancialDataByPaging(bllRequest, out totalCount);
+            result.total = totalCount;
+            result.rows = datas;
             return result;
         }
     }
