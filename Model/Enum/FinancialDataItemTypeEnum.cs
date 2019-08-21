@@ -34,6 +34,11 @@ namespace Model.Enum
         /// <summary>
         /// 项目
         /// </summary>
-        XiangMu = 5
+        XiangMu = 5,
+
+        /// <summary>
+        /// 业态
+        /// </summary>
+        YeTai = 6
     }
 }

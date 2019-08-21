@@ -21,6 +21,8 @@ namespace Web.Controllers.Actions.FinancialDataActions
     {
         private IFinancialDataBLL _financialDataBll;
 
+        private Workbook excel = null;
+
         public UpladExcelAction(IFinancialDataBLL financialDataBll)
         {
             _financialDataBll = financialDataBll;
@@ -34,7 +36,7 @@ namespace Web.Controllers.Actions.FinancialDataActions
                 return result;
             }
             var file = HttpContext.Current.Request.Files[0];
-            var excel = new Aspose.Cells.Workbook(file.InputStream);
+            excel = new Aspose.Cells.Workbook(file.InputStream);
             var sheet = excel.Worksheets[0];
             var excelId = SaveExcel(excel, excelName);
             ProcessAccountItem(sheet, excelId);
@@ -120,9 +122,17 @@ namespace Web.Controllers.Actions.FinancialDataActions
             };
             financialDataItems.Add(xuNiJiTuan);
 
-            var emptyPianQuItems = items.Where(x => string.IsNullOrEmpty(x.PianQuName)).ToList();
-            var notEmptyPianQuItems = items.Where(x => !string.IsNullOrEmpty(x.PianQuName)).ToList();
-            foreach (var item in emptyPianQuItems)
+            var inXuNiJiTuanItems = new List<XiangMuForExcelDataModel>();
+            var notInXuNiJiTuanItems = new List<XiangMuForExcelDataModel>();
+            DistributeExcelData(items, inXuNiJiTuanItems, notInXuNiJiTuanItems);
+            foreach (var item in notInXuNiJiTuanItems)
+            {
+                if (string.IsNullOrEmpty(item.PianQuName))
+                {
+                    item.PianQuName = "虚拟片区";
+                }
+            }
+            foreach (var item in inXuNiJiTuanItems)
             {
                 if (string.IsNullOrEmpty(item.ShiYeBuName))
                 {
@@ -131,9 +141,9 @@ namespace Web.Controllers.Actions.FinancialDataActions
             }
 
             // 事业部
-            var emptyShiYeBuGroup = emptyPianQuItems.GroupBy(x => x.ShiYeBuName);
+            var emptyShiYeBuGroup = inXuNiJiTuanItems.GroupBy(x => x.ShiYeBuName);
             FillShiYeBuInfo(emptyShiYeBuGroup, financialDataItems, ref id, xuNiJiTuan.ItemId, 2);
-            var notEmptyShiYeBuGroup = notEmptyPianQuItems.GroupBy(x => x.ShiYeBuName);
+            var notEmptyShiYeBuGroup = notInXuNiJiTuanItems.GroupBy(x => x.ShiYeBuName);
             FillShiYeBuInfo(notEmptyShiYeBuGroup, financialDataItems, ref id, 0, 1);
 
             foreach (var shiYeBugroup in emptyShiYeBuGroup)
@@ -202,7 +212,7 @@ namespace Web.Controllers.Actions.FinancialDataActions
             }
 
             //项目
-            var emptyXiangMuGroup = emptyPianQuItems.GroupBy(x => x.XiangMuName);
+            var emptyXiangMuGroup = inXuNiJiTuanItems.GroupBy(x => x.XiangMuName);
             foreach (var group in emptyXiangMuGroup)
             {
                 var datasInXiangMu = group.ToList();
@@ -222,7 +232,7 @@ namespace Web.Controllers.Actions.FinancialDataActions
                     item.XiangMuId = xiangMuModel.ItemId;
                 }
             }
-            var notEmptyXiangMuGroup = notEmptyPianQuItems.GroupBy(x => x.XiangMuName);
+            var notEmptyXiangMuGroup = notInXuNiJiTuanItems.GroupBy(x => x.XiangMuName);
             foreach (var group in notEmptyXiangMuGroup)
             {
                 var datasInXiangMu = group.ToList();
@@ -356,6 +366,28 @@ namespace Web.Controllers.Actions.FinancialDataActions
             };
             var excelId = _financialDataBll.SaveExcelRecord(excelRecordModel);
             return excelId;
+        }
+
+        /// <summary>
+        /// 区分哪些事业部是虚拟集团，哪些不是
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="inXuNiJiTuanItems"></param>
+        /// <param name="notInXuNiJiTuanItems"></param>
+        public void DistributeExcelData(List<XiangMuForExcelDataModel> items, List<XiangMuForExcelDataModel> inXuNiJiTuanItems, List<XiangMuForExcelDataModel> notInXuNiJiTuanItems)
+        {
+            var sheet = excel.Worksheets[1];
+            var shiYeBuNames = new List<string>();
+            for (int i = 0; i < sheet.Cells.MaxDataRow + 100; i++)
+            {
+                if (string.IsNullOrEmpty(GetCellValue(sheet, i, 0)))
+                {
+                    break;
+                }
+                shiYeBuNames.Add(GetCellValue(sheet, i, 0));
+            }
+            inXuNiJiTuanItems = items.Where(x => shiYeBuNames.Contains(x.ShiYeBuName)).ToList();
+            notInXuNiJiTuanItems = items.Where(x => !shiYeBuNames.Contains(x.ShiYeBuName)).ToList();
         }
 
         /// <summary>
