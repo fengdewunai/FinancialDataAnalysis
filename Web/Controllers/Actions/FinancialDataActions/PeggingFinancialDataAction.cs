@@ -50,6 +50,10 @@ namespace Web.Controllers.Actions.FinancialDataActions
 
             var totalCount = 0;
             var datas = _financialDataBll.GetFinancialDataByPaging(bllRequest, out totalCount);
+            foreach (var data in datas)
+            {
+                data.DetailData = Math.Round(data.DetailData, 2);
+            }
             result.total = totalCount;
             result.rows = datas;
             return result;

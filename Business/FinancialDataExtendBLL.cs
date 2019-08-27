@@ -95,7 +95,7 @@ namespace Business
                 {
                     var financialDataItem = financialDataItems.FirstOrDefault(x => x.ItemId.ToString() == financialDataItemId);
                     var financialData = GetFinancialDataForAccountItem(financialDataItem, financialDataItems, dataInAccountItem);
-                    dataDic.Add(financialDataItem.ItemId.ToString(), financialData.ToString());
+                    dataDic.Add(financialDataItem.ItemId.ToString(), Math.Round(financialData, 2).ToString());
                 }
                 if (accountItem.AccountTypeId == 1)
                 {

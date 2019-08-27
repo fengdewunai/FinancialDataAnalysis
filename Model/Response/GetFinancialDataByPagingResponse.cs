@@ -44,6 +44,6 @@ namespace Model.Response
         /// <summary>
         /// 数据
         /// </summary>
-        public string DetailData { get; set; }
+        public double DetailData { get; set; }
     }
 }

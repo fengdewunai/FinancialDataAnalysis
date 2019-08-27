@@ -82,6 +82,14 @@ namespace Web.Controllers.Actions.FinancialDataActions
                 }
                 excelDatas.Datas.Add(xiangMuForExcelDataModel);
             }
+
+            foreach (var data in excelDatas.Datas)
+            {
+                if (string.IsNullOrEmpty(data.ShiYeBuName))
+                {
+                    data.ShiYeBuName = data.XiangMuName;
+                }
+            }
             ProcessXiangMu(excelDatas.Datas, excelId);
             var financialDataModels = new List<FinancialDataModel>();
             foreach (var excelXiangMuData in excelDatas.Datas)
@@ -130,13 +138,6 @@ namespace Web.Controllers.Actions.FinancialDataActions
                 if (string.IsNullOrEmpty(item.PianQuName))
                 {
                     item.PianQuName = "虚拟片区";
-                }
-            }
-            foreach (var item in inXuNiJiTuanItems)
-            {
-                if (string.IsNullOrEmpty(item.ShiYeBuName))
-                {
-                    item.ShiYeBuName = item.XiangMuName;
                 }
             }
 
@@ -386,8 +387,8 @@ namespace Web.Controllers.Actions.FinancialDataActions
                 }
                 shiYeBuNames.Add(GetCellValue(sheet, i, 0));
             }
-            inXuNiJiTuanItems = items.Where(x => shiYeBuNames.Contains(x.ShiYeBuName)).ToList();
-            notInXuNiJiTuanItems = items.Where(x => !shiYeBuNames.Contains(x.ShiYeBuName)).ToList();
+            inXuNiJiTuanItems.AddRange(items.Where(x => shiYeBuNames.Contains(x.ShiYeBuName)).ToList());
+            notInXuNiJiTuanItems.AddRange(items.Where(x => !shiYeBuNames.Contains(x.ShiYeBuName)).ToList());
         }
 
         /// <summary>

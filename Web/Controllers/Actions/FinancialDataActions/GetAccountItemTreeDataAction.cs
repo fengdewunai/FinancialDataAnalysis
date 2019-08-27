@@ -41,7 +41,7 @@ namespace Web.Controllers.Actions.FinancialDataActions
                 result.Add(new TreeDataModel()
                 {
                     id = item.AccountCode,
-                    text = item.AccountName,
+                    text = string.Format("{0}({1})", item.AccountName, item.AccountCode),
                     leaf = item.IsLeaf == 1,
                     @checked = false
                 });

@@ -38,7 +38,16 @@ namespace Web.Controllers.Actions.FinancialDataActions
             }
             else if(treeTypeId == 2) //展示性质
             {
-                items = datas.Where(x => x.ItemTypeId != (int)FinancialDataItemTypeEnum.PianQu && (x.ParentId.ToString() == id || x.XingZhiId.ToString() == id)).ToList();
+                var currentItem = datas.FirstOrDefault(x => x.ItemId.ToString() == id);
+                if (currentItem.ItemTypeId != (int)FinancialDataItemTypeEnum.XingZhi)
+                {
+                    items = datas.Where(x => (x.ItemTypeId == (int)FinancialDataItemTypeEnum.XingZhi || x.ItemTypeId == (int)FinancialDataItemTypeEnum.ShiYeBu) && x.ParentId.ToString() == id).ToList();
+                }
+                else
+                {
+                    items = datas.Where(x => x.ItemTypeId == (int)FinancialDataItemTypeEnum.XiangMu && x.XingZhiId.ToString() == id).ToList();
+                }
+                
             }
             foreach (var item in items)
             {

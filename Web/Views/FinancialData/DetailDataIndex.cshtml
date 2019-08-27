@@ -10,7 +10,7 @@
         //// 科目树
         var accountTree = Ext.create('Financial.BaseTree', {
             region: "west",
-            width:200,
+            width:300,
             url: "/FinancialData/GetAccountItemTreeData",
             extraParams: { excelId: excelId}
         });
@@ -37,7 +37,7 @@
         // 左侧的panel
         var westPanel = Ext.create('Ext.form.Panel', {
             border: false,
-            width: 420,
+            width: 520,
             layout: "border", 
             region: "west",
             title: "条件筛选",
