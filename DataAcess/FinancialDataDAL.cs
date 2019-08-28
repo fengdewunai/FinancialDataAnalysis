@@ -39,6 +39,17 @@ namespace DataAcess
         }
 
         /// <summary>
+        /// 根据excelRecordId删除所有科目
+        /// </summary>
+        /// <param name="excelRecordId"></param>
+        public void DeleteAccountByExcelRecordId(int excelRecordId)
+        {
+            CurrentConnectStringContext.StoredProcedure("AccountItem_DeleteByExcelRecordId")
+                .Parameter("v_ExcelRecordId", excelRecordId)
+                .Execute();
+        }
+
+        /// <summary>
         /// 获取所有导入的excel
         /// </summary>
         /// <returns></returns>
@@ -64,6 +75,17 @@ namespace DataAcess
         }
 
         /// <summary>
+        /// DeleteExcelRecord
+        /// </summary>
+        /// <returns></returns>
+        public void DeleteExcelRecord(int excelRecordId)
+        {
+            CurrentConnectStringContext.StoredProcedure("ExcelRecord_DeleteById")
+                .Parameter("v_ExcelRecordId", excelRecordId)
+                .Execute();
+        }
+
+        /// <summary>
         /// GetFinancialDataItemByExcelRecordId
         /// </summary>
         /// <param name="excelRecordId"></param>
@@ -84,6 +106,18 @@ namespace DataAcess
             var dataTable = ListToDataTable(dataModels);
             dataTable.TableName = "FinancialDataItem";
             BulkInsert(dataTable);
+        }
+
+        /// <summary>
+        /// DeleteFinancialDataItemByExcelRecordId
+        /// </summary>
+        /// <param name="excelRecordId"></param>
+        /// <returns></returns>
+        public void DeleteFinancialDataItemByExcelRecordId(int excelRecordId)
+        {
+            CurrentConnectStringContext.StoredProcedure("FinancialDataItem_DeleteByExcelRecordId")
+                .Parameter("v_ExcelRecordId", excelRecordId)
+                .Execute();
         }
 
         /// <summary>
@@ -135,6 +169,17 @@ namespace DataAcess
             var dataTable = ListToDataTable(dataModels);
             dataTable.TableName = "FinancialData";
             BulkInsert(dataTable);
+        }
+
+        /// <summary>
+        /// DeleteFinancialData
+        /// </summary>
+        /// <param name="excelRecordId"></param>
+        public void DeleteFinancialData(int excelRecordId)
+        {
+            CurrentConnectStringContext.StoredProcedure("FinancialData_DeleteByExcelRecordId")
+                .Parameter("v_ExcelRecordId", excelRecordId)
+                .Execute();
         }
     }
 }

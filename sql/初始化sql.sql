@@ -114,6 +114,26 @@ BEGIN
     where ExcelRecordId = v_ExcelRecordId;
 END$$
 
+DROP PROCEDURE IF EXISTS AccountItem_DeleteByExcelRecordId$$
+CREATE PROCEDURE `AccountItem_DeleteByExcelRecordId`(
+	v_ExcelRecordId int
+)
+    SQL SECURITY INVOKER
+BEGIN
+/* 
+创建者:		高峰
+创建日期:	2019-08-28
+描述：		删除excelid下所有科目	
+修改记录:
+--------------------------------------------------------
+修改者		修改日期		修改目的
+
+--------------------------------------------------------
+*/
+	delete FROM `AccountItem`
+    where ExcelRecordId = v_ExcelRecordId;
+END$$
+
 DROP PROCEDURE IF EXISTS ExcelRecord_Get$$
 CREATE PROCEDURE `ExcelRecord_Get`(
 )
@@ -132,6 +152,25 @@ BEGIN
 	SELECT 
 		*
 	FROM `ExcelRecord`;
+END$$
+
+DROP PROCEDURE IF EXISTS ExcelRecord_DeleteById$$
+CREATE PROCEDURE `ExcelRecord_DeleteById`(
+	v_ExcelRecordId int(11)
+)
+    SQL SECURITY INVOKER
+BEGIN
+/* 
+创建者:		高峰
+创建日期:	2019-08-16
+描述：		删除指定excel记录
+修改记录:
+--------------------------------------------------------
+修改者		修改日期		修改目的
+
+--------------------------------------------------------
+*/
+	delete FROM `ExcelRecord` where ExcelRecordId = v_ExcelRecordId;
 END$$
 
 
@@ -190,7 +229,7 @@ BEGIN
 /* 
 创建者:		高峰
 创建日期:	2019-08-16
-描述：		获取所有excel记录	
+描述：		获取所有excel对应的项目记录	
 修改记录:
 --------------------------------------------------------
 修改者		修改日期		修改目的
@@ -200,6 +239,26 @@ BEGIN
 	SELECT 
 		*
 	FROM `FinancialDataItem`
+    where ExcelRecordId = v_ExcelRecordId;
+END$$
+
+DROP PROCEDURE IF EXISTS FinancialDataItem_DeleteByExcelRecordId$$
+CREATE PROCEDURE `FinancialDataItem_DeleteByExcelRecordId`(
+	v_ExcelRecordId int
+)
+    SQL SECURITY INVOKER
+BEGIN
+/* 
+创建者:		高峰
+创建日期:	2019-08-28
+描述：		删除所有excel对应的项目记录	
+修改记录:
+--------------------------------------------------------
+修改者		修改日期		修改目的
+
+--------------------------------------------------------
+*/
+	delete FROM `FinancialDataItem`
     where ExcelRecordId = v_ExcelRecordId;
 END$$
 
@@ -292,4 +351,24 @@ set @sqlstr=concat(@sqlcol,@fromStr, @whereStr,@sqlOrder);
 PREPARE sqlcommend from @sqlstr;
 execute sqlcommend;
 
+END$$
+
+DROP PROCEDURE IF EXISTS FinancialData_DeleteByExcelRecordId$$
+CREATE PROCEDURE `FinancialData_DeleteByExcelRecordId`(
+	v_ExcelRecordId int(11)
+)
+    SQL SECURITY INVOKER
+BEGIN
+/* 
+创建者:		高峰
+创建日期:	2019-08-28
+描述：		删除所有excel对应的数据	
+修改记录:
+--------------------------------------------------------
+修改者		修改日期		修改目的
+
+--------------------------------------------------------
+*/
+	delete FROM `FinancialData`
+    where ExcelRecordId = v_ExcelRecordId;
 END$$

@@ -50,6 +50,15 @@ namespace Business
         }
 
         /// <summary>
+        /// 根据excelRecordId删除所有科目
+        /// </summary>
+        /// <param name="excelRecordId"></param>
+        public void DeleteAccountByExcelRecordId(int excelRecordId)
+        {
+            _financialDataDal.DeleteAccountByExcelRecordId(excelRecordId);
+        }
+
+        /// <summary>
         /// 获取所有导入的excel
         /// </summary>
         /// <returns></returns>
@@ -65,6 +74,15 @@ namespace Business
         public int SaveExcelRecord(ExcelRecordModel model)
         {
             return _financialDataDal.SaveExcelRecord(model);
+        }
+
+        /// <summary>
+        /// DeleteExcelRecord
+        /// </summary>
+        /// <returns></returns>
+        public void DeleteExcelRecord(int excelRecordId)
+        {
+            _financialDataDal.DeleteExcelRecord(excelRecordId);
         }
 
         /// <summary>
@@ -100,6 +118,16 @@ namespace Business
         }
 
         /// <summary>
+        /// DeleteFinancialDataItemByExcelRecordId
+        /// </summary>
+        /// <param name="excelRecordId"></param>
+        /// <returns></returns>
+        public void DeleteFinancialDataItemByExcelRecordId(int excelRecordId)
+        {
+            _financialDataDal.DeleteFinancialDataItemByExcelRecordId(excelRecordId);
+        }
+
+        /// <summary>
         /// GetFinancialDataByFilter
         /// </summary>
         /// <param name="filter"></param>
@@ -128,6 +156,15 @@ namespace Business
         public void BatchInsertFinancialData(List<FinancialDataModel> dataModels)
         {
             _financialDataDal.BatchInsertFinancialData(dataModels);
+        }
+
+        /// <summary>
+        /// DeleteFinancialData
+        /// </summary>
+        /// <param name="excelRecordId"></param>
+        public void DeleteFinancialData(int excelRecordId)
+        {
+            _financialDataDal.DeleteFinancialData(excelRecordId);
         }
     }
 }

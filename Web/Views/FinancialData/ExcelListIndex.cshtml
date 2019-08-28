@@ -6,6 +6,7 @@
 <script>
     Ext.onReady(function() {
 
+        //excel列表Grid
         var grid = Ext.create('Financial.BaseGrid', {
             id:"ExcelListGrid",
             region: "center",
@@ -24,8 +25,40 @@
                 { text: '下载原始excel', flex: 1,  dataIndex: 'ExcelUrl', Width: 120, align: 'center', renderer: function (v) { return "<a href='"+v+"'>下载</a>" } }
             ],
             tbar: [
-                "->", { iconCls: "a_search", text: "导入Excel", handler: function () { uploadExcelWin.show(); } }]
+                "->", { iconCls: "a_search", text: "导入Excel", handler: function () { uploadExcelWin.show(); } },
+                "-", { iconCls: "a_search", text: "删除Excel", handler: DeleteExcel }
+            ]
         });
+
+        // 删除选中的excel
+        function DeleteExcel() {
+            var selectedIds = Ext.getCmp("ExcelListGrid").getSelectedIds("ExcelRecordId");
+            if (selectedIds.length == 0) {
+                Ext.MessageBox.alert("提示", "请选择要删除的excel");
+                return;
+            }
+            Ext.MessageBox.confirm(
+                '提示',
+                '您确定要删除选择的excel吗?',
+                function(btn) {
+                    if (btn == 'yes') {
+                        Ext.Ajax.request({
+                            url: '/FinancialData/DeleteExcel',
+                            method: 'post',
+                            params: {
+                                excelIds: selectedIds.join(",")
+                            },
+                            success: function (response, options) {
+                                Ext.MessageBox.alert("提示", "删除成功");
+                            },
+                            failure: function () {
+                                Ext.MessageBox.alert("提示", "删除失败");
+                            }
+                        });
+                    }
+                }
+            );
+        }
 
         var panel = new Ext.Viewport({
             layout: "border", //边界布局 

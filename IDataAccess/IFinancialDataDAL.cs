@@ -27,6 +27,12 @@ namespace IDataAccess
         void BatchInsertAccount(List<AccountItemModel> dataModels);
 
         /// <summary>
+        /// 根据excelRecordId删除所有科目
+        /// </summary>
+        /// <param name="excelRecordId"></param>
+        void DeleteAccountByExcelRecordId(int excelRecordId);
+
+        /// <summary>
         /// 获取所有导入的excel
         /// </summary>
         /// <returns></returns>
@@ -37,6 +43,12 @@ namespace IDataAccess
         /// </summary>
         /// <returns></returns>
         int SaveExcelRecord(ExcelRecordModel model);
+
+        /// <summary>
+        /// DeleteExcelRecord
+        /// </summary>
+        /// <returns></returns>
+        void DeleteExcelRecord(int excelRecordId);
 
         /// <summary>
         /// GetFinancialDataItemByExcelRecordId
@@ -50,6 +62,13 @@ namespace IDataAccess
         /// </summary>
         /// <param name="dataModels"></param>
         void BatchInsertFinancialDataItem(List<FinancialDataItemModel> dataModels);
+
+        /// <summary>
+        /// DeleteFinancialDataItemByExcelRecordId
+        /// </summary>
+        /// <param name="excelRecordId"></param>
+        /// <returns></returns>
+        void DeleteFinancialDataItemByExcelRecordId(int excelRecordId);
 
         /// <summary>
         /// GetFinancialDataByFilter
@@ -71,5 +90,11 @@ namespace IDataAccess
         /// </summary>
         /// <param name="dataModels"></param>
         void BatchInsertFinancialData(List<FinancialDataModel> dataModels);
+
+        /// <summary>
+        /// DeleteFinancialData
+        /// </summary>
+        /// <param name="excelRecordId"></param>
+        void DeleteFinancialData(int excelRecordId);
     }
 }

@@ -155,7 +155,6 @@ namespace Web.Controllers
         /// <summary>
         /// 上传Excel
         /// </summary>
-        /// <param name="excelId"></param>
         /// <param name="excelName"></param>
         /// <returns></returns>
         [HttpPost]
@@ -170,6 +169,27 @@ namespace Web.Controllers
             catch (Exception ex)
             {
                 Log.Write("上传Excel出错",MessageType.Error,typeof(FinancialDataController),ex);
+                return Json(new SuccessModel());
+            }
+        }
+
+        /// <summary>
+        /// 删除Excel
+        /// </summary>
+        /// <param name="excelIds"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult DeleteExcel(string excelIds)
+        {
+            try
+            {
+                var action = new DeleteExcelAction(_financialDataBll);
+                action.Process(excelIds);
+                return Json(new SuccessModel(){success = true});
+            }
+            catch (Exception ex)
+            {
+                Log.Write("删除Excel出错", MessageType.Error, typeof(FinancialDataController), ex);
                 return Json(new SuccessModel());
             }
         }
