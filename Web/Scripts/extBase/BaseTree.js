@@ -59,7 +59,14 @@ Ext.define('Financial.BaseTree', {
         var selectedNodes = me.getChecked();
         Ext.each(selectedNodes, function(node) {
             result.push(node.raw.id);
-        }) 
+        });
         return result;
+    },
+    cancelChecked: function() {
+        var me = this;
+        var selectedNodes = me.getChecked();
+        Ext.each(selectedNodes, function (node) {
+            node.checked = false;
+        });
     }
 });

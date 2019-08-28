@@ -9,10 +9,14 @@
     Ext.onReady(function() {
         //// 科目树
         var accountTree = Ext.create('Financial.BaseTree', {
+            id:"AccountTree",
             region: "west",
             width:300,
             url: "/FinancialData/GetAccountItemTreeData",
-            extraParams: { excelId: excelId}
+            extraParams: { excelId: excelId },
+            tbar: [
+                "->", { iconCls: "a_search", text: "取消选中", handler: function () { accountTree.cancelChecked(); } }
+            ]
         });
 
         //// 片区项目树
@@ -34,6 +38,42 @@
 
         var financialDataItemTree = financialDataItemForPianQuTree;
 
+        // 存放项目tree的panel
+        var financialDataItemTreePanel = Ext.create('Ext.form.Panel', {
+            layout: "border",
+            region: "center",
+            items: [
+                financialDataItemForPianQuTree,
+                financialDataItemForXingZhiTree
+            ],
+            tbar: [{
+                xtype: 'radiogroup',
+                name: 'TreeTypeRadioGroup',
+                id:'TreeTypeRadioGroup',
+                width: 150,
+                items: [
+                    { boxLabel: '片区', name: 'TreeTypeRadio', inputValue: '1', checked:true}, 
+                    { boxLabel: '性质', name: 'TreeTypeRadio', inputValue: '2' }
+                ],
+                listeners: {
+                    change: function (me, newValue, oldValue, eOpts) {
+                        var checkedValue = newValue.TreeTypeRadio;
+                        if (checkedValue == "1") {
+                            financialDataItemTree = financialDataItemForPianQuTree;
+                            financialDataItemForPianQuTree.show();
+                            financialDataItemForXingZhiTree.hide();
+                        } else {
+                            financialDataItemTree = financialDataItemForXingZhiTree;
+                            financialDataItemForXingZhiTree.show();
+                            financialDataItemForPianQuTree.hide();
+                        }
+                    }
+                }
+            },"->", {
+                 text: "取消选中", handler: function () { financialDataItemTree.cancelChecked(); }
+            }]
+        });
+
         // 左侧的panel
         var westPanel = Ext.create('Ext.form.Panel', {
             border: false,
@@ -43,44 +83,17 @@
             title: "条件筛选",
             items: [
                 accountTree,
-                {
-                    layout: "border",
-                    region: "center",
-                    items: [
-                        financialDataItemForPianQuTree,
-                        financialDataItemForXingZhiTree
-                    ],
-                    tbar: [{
-                        xtype: 'radiogroup',
-                        name: 'TreeTypeRadioGroup',
-                        id:'TreeTypeRadioGroup',
-                        width: 150,
-                        items: [
-                            { boxLabel: '片区', name: 'TreeTypeRadio', inputValue: '1', checked:true}, 
-                            { boxLabel: '性质', name: 'TreeTypeRadio', inputValue: '2' }
-                        ],
-                        listeners: {
-                            change: function (me, newValue, oldValue, eOpts) {
-                                var checkedValue = newValue.TreeTypeRadio;
-                                if (checkedValue == "1") {
-                                    financialDataItemTree = financialDataItemForPianQuTree;
-                                    financialDataItemForPianQuTree.show();
-                                    financialDataItemForXingZhiTree.hide();
-                                } else {
-                                    financialDataItemTree = financialDataItemForXingZhiTree;
-                                    financialDataItemForXingZhiTree.show();
-                                    financialDataItemForPianQuTree.hide();
-                                }
-                            }
-                        }
-                    }]
-                }]
+                financialDataItemTreePanel
+            ]
         });
 
         // 右侧grid
         var grid = Ext.create('Financial.BaseGrid', {
             region: "center",
             url: "/FinancialData/GetFinancialDataGridData",
+            viewConfig:{  
+                enableTextSelection:true  
+            },
             tbar: [
                 {
                     xtype: 'radiogroup',
