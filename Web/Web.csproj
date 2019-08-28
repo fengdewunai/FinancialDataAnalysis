@@ -152,6 +152,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\Actions\FinancialDataActions\DeleteExcelAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\ExportExcelAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\GetAccountItemTreeDataAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\GetExcelListAction.cs" />

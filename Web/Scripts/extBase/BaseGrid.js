@@ -32,7 +32,7 @@
     getSelectedIds: function(idFieldName) {
         var me = this;
         var ids = [];
-        var recordList = me.getSelectionModel().getSelections();//获取多行
+        var recordList = me.getSelectionModel().getSelection();//获取多行
         for (var i = 0; i < recordList.length; i++) {
             ids.push(recordList[i].get(idFieldName));
         }
