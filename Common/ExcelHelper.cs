@@ -147,5 +147,23 @@ namespace Common
             style.Borders[BorderType.LeftBorder].Color = Color.FromArgb(226, 226, 226);
             return style;
         }
+
+        /// <summary>
+        /// 获取单元格数据
+        /// </summary>
+        /// <param name="sheet"></param>
+        /// <param name="rowIndex"></param>
+        /// <param name="columnIndex"></param>
+        /// <returns></returns>
+        public static string GetCellValue(Worksheet sheet, int rowIndex, int columnIndex)
+        {
+            var value = sheet.Cells[rowIndex, columnIndex].Value;
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
+            return value.ToString();
+        }
     }
 }
