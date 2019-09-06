@@ -3,6 +3,7 @@
     ViewBag.Title = "ExcelListIndex";
 }
 <script type="text/javascript" src="/Scripts/FinancialData/ExcelListIndex/AddExcelPanel.js"></script>
+<script type="text/javascript" src="/Scripts/FinancialData/ExcelListIndex/DelteExcelColunmWin.js"></script>
 <script>
     Ext.onReady(function() {
 
@@ -26,7 +27,8 @@
             ],
             tbar: [
                 "->", { iconCls: "a_search", text: "导入Excel", handler: function () { uploadExcelWin.show(); } },
-                "-", { iconCls: "a_search", text: "删除Excel", handler: DeleteExcel }
+                "-", { iconCls: "a_search", text: "删除Excel", handler: DeleteExcel },
+                "-", { iconCls: "a_search", text: "删除Excel某列", handler: function () { deleteExcelColumnWin.show(); } }
             ]
         });
 
@@ -42,6 +44,7 @@
                 '您确定要删除选择的excel吗?',
                 function(btn) {
                     if (btn == 'yes') {
+                        Ext.MessageBox.wait("正在删除Excel", "等待");
                         Ext.Ajax.request({
                             url: '/FinancialData/DeleteExcel',
                             method: 'post',
@@ -49,6 +52,8 @@
                                 excelIds: selectedIds.join(",")
                             },
                             success: function (response, options) {
+                                Ext.getCmp("ExcelListGrid").store.load();
+                                Ext.MessageBox.hide();
                                 Ext.MessageBox.alert("提示", "删除成功");
                             },
                             failure: function () {
@@ -58,6 +63,10 @@
                     }
                 }
             );
+        }
+
+        function DeleteExcelColunm() {
+
         }
 
         var panel = new Ext.Viewport({

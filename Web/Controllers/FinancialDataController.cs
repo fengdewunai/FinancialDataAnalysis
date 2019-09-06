@@ -236,5 +236,26 @@ namespace Web.Controllers
                 return Json(new SuccessModel());
             }
         }
+
+        /// <summary>
+        /// 删除excel某列
+        /// </summary>
+        /// <param name="keyWordName"></param>
+        /// <param name="rowIndex"></param>
+        /// <returns></returns>
+        public ActionResult DeleteExcelColumn(string keyWordName, int rowIndex)
+        {
+            try
+            {
+                var action = new DeleteExcelColumnAction();
+                var result = action.Process(keyWordName, rowIndex-1);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                Log.Write("删除excel某列出错", MessageType.Error, typeof(FinancialDataController), ex);
+                return Json(new SuccessModel());
+            }
+        }
     }
 }

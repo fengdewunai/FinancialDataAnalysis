@@ -13,10 +13,10 @@
             region: "west",
             width:300,
             url: "/FinancialData/GetAccountItemTreeData",
-            extraParams: { excelId: excelId },
-            tbar: [
-                "->", { iconCls: "a_search", text: "取消选中", handler: function () { accountTree.cancelChecked(); } }
-            ]
+            extraParams: { excelId: excelId }
+            //,tbar: [
+            //    "->", { iconCls: "a_search", text: "取消选中", handler: function () { accountTree.cancelChecked(); } }
+            //]
         });
 
         //// 片区项目树
@@ -69,9 +69,11 @@
                         }
                     }
                 }
-            },"->", {
-                 text: "取消选中", handler: function () { financialDataItemTree.cancelChecked(); }
-            }]
+            }
+                //, "->", {
+                // text: "取消选中", handler: function () { financialDataItemTree.cancelChecked(); }
+                //}
+            ]
         });
 
         // 左侧的panel

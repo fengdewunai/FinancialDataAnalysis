@@ -357,6 +357,11 @@ namespace Web.Controllers.Actions.FinancialDataActions
             var directory = HttpContext.Current.Request.PhysicalApplicationPath;
             var relativePath = string.Concat("\\Files\\FinancialExcel\\", excelName, "_", Guid.NewGuid(), ".xlsx");
             var filePath = string.Concat(directory, relativePath);
+            var directoryPath = Path.GetDirectoryName(filePath);
+            if (!Directory.Exists(directoryPath))
+            {
+                Directory.CreateDirectory(directoryPath);
+            }
             excel.Save(filePath,SaveFormat.Xlsx);
             var excelRecordModel = new ExcelRecordModel()
             {

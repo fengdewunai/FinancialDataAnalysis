@@ -152,6 +152,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\Actions\FinancialDataActions\DeleteExcelAction.cs" />
+    <Compile Include="Controllers\Actions\FinancialDataActions\DeleteExcelColumnAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\ExportExcelAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\GetAccountItemTreeDataAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\GetExcelListAction.cs" />
@@ -165,6 +167,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Response\DeleteExcelColumnResponse.cs" />
     <Compile Include="Models\Response\GetAccountItemTreeDataResponse.cs" />
     <Compile Include="Models\Response\GetExcelListResponse.cs" />
     <Compile Include="Models\SuccessModel.cs" />
@@ -1492,6 +1495,7 @@
     <Content Include="Scripts\extBase\BaseWindow.js" />
     <Content Include="Scripts\FinancialData\DetailDataIndex\PeggingFinancialDataGrid.js" />
     <Content Include="Scripts\FinancialData\ExcelListIndex\AddExcelPanel.js" />
+    <Content Include="Scripts\FinancialData\ExcelListIndex\DelteExcelColunmWin.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -1511,6 +1515,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Common\" />
     <Folder Include="Files\FinancialExcel\" />
     <Folder Include="Models\Request\" />
   </ItemGroup>
