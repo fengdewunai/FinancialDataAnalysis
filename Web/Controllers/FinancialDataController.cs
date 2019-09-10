@@ -103,20 +103,23 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// 获取数据
+        /// 获取grid数据
         /// </summary>
         /// <param name="excelId"></param>
         /// <param name="accountItemIds">科目id集合</param>
         /// <param name="financialDataItemIds">项目id集合</param>
+        /// <param name="xiangMuTreeTypeId">项目数类型</param>
         /// <param name="qiJianTypeId">会计期间类型</param>
+        /// <param name="onlyStatisticChildren">是否只统计下级项目</param>
+        /// <param name="statisticAccountChildren">是否统计下级科目</param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult GetFinancialDataGridData(int excelId, string accountItemIds, string financialDataItemIds, int xiangMuTreeTypeId, int qiJianTypeId = 1, int onlyStatisticChildren = 0)
+        public ActionResult GetFinancialDataGridData(int excelId, string accountItemIds, string financialDataItemIds, int xiangMuTreeTypeId, int qiJianTypeId = 1, int onlyStatisticChildren = 0, int statisticAccountChildren = 0)
         {
             try
             {
                 var action = new GetFinancialDataGridDataAction(_financialDataExtendBll);
-                var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren, xiangMuTreeTypeId);
+                var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren, xiangMuTreeTypeId, statisticAccountChildren);
                 return Json(result);
             }
             catch (Exception ex)
@@ -195,24 +198,24 @@ namespace Web.Controllers
         }
 
         /// <summary>
-        /// 获取数据
+        /// 导出grid数据excel
         /// </summary>
         /// <param name="excelId"></param>
         /// <param name="accountItemIds">科目id集合</param>
         /// <param name="financialDataItemIds">项目id集合</param>
         /// <param name="qiJianTypeId">会计期间类型</param>
         /// <returns></returns>
-        public FileResult ExportExcel(int excelId, string accountItemIds, string financialDataItemIds, int xiangMuTreeTypeId, int qiJianTypeId = 1, int onlyStatisticChildren=0)
+        public FileResult ExportExcel(int excelId, string accountItemIds, string financialDataItemIds, int xiangMuTreeTypeId, int qiJianTypeId = 1, int onlyStatisticChildren=0, int statisticAccountChildren = 0)
         {
             try
             {
                 var action = new ExportExcelAction(_financialDataBll, _financialDataExtendBll);
-                var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren, xiangMuTreeTypeId);
+                var result = action.Process(excelId, accountItemIds, financialDataItemIds, qiJianTypeId, onlyStatisticChildren, xiangMuTreeTypeId, statisticAccountChildren);
                 return File(result, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", string.Format("统计数据_{0}.xlsx", DateTime.Now.ToString("yyyyMMddHHmmss")));
             }
             catch (Exception ex)
             {
-                Log.Write("获取数据出错", MessageType.Error, typeof(FinancialDataController), ex);
+                Log.Write("导出grid数据excel出错", MessageType.Error, typeof(FinancialDataController), ex);
                 return null;
             }
             

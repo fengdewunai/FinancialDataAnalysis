@@ -69,7 +69,7 @@ namespace Business
         /// <param name="qiJianTypeId">期间类型</param>
         /// <param name="onlyStatisticChildren">是否只统计下级项目</param>
         /// <returns></returns>
-        public DynamicGridDataModel GetGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId, int onlyStatisticChildren, int xiangMuTreeTypeId)
+        public DynamicGridDataModel GetGridData(int excelId, string accountItemIds, string financialDataItemIds, int qiJianTypeId, int onlyStatisticChildren, int xiangMuTreeTypeId, int statisticAccountChildren)
         {
             var gridData = new DynamicGridDataModel() { rows = new List<Dictionary<string, string>>() };
             var shouRuDatas = new List<Dictionary<string, string>>();
@@ -82,6 +82,14 @@ namespace Business
             var accountItems = _financialDataBll.GetAccountByExcelRecordId(excelId);
             var financialDataItems = _financialDataBll.GetFinancialDataItemByExcelRecordId(excelId, xiangMuTreeTypeId);
             var accountItemIdList = accountItemIds.Split(',').OrderBy(x => x).ToList();
+            if (statisticAccountChildren == 1)
+            {
+                accountItemIdList = GetAccountWidthChildren(accountItemIdList, accountItems);
+            }
+            if (statisticAccountChildren == 1)
+            {
+
+            }
             var financialDataItemIdList = GetFinancialDataItemIdList(financialDataItemIds, onlyStatisticChildren, financialDataItems);
             gridData.total = accountItemIdList.Count;
             foreach (var accountItemId in accountItemIdList)
@@ -95,7 +103,7 @@ namespace Business
                 {
                     var financialDataItem = financialDataItems.FirstOrDefault(x => x.ItemId.ToString() == financialDataItemId);
                     var financialData = GetFinancialDataForAccountItem(financialDataItem, financialDataItems, dataInAccountItem);
-                    dataDic.Add(financialDataItem.ItemId.ToString(), Math.Round(financialData, 2).ToString());
+                    dataDic.Add(financialDataItem.ItemId.ToString(), Math.Round(financialData, 2, MidpointRounding.AwayFromZero).ToString());
                 }
                 if (accountItem.AccountTypeId == 1)
                 {
@@ -178,6 +186,7 @@ namespace Business
             var resultSumDic = new Dictionary<string, string>();
             resultSumDic.Add("AccountName", "收支盈亏");
             resultSumDic.Add("AccountCode", "0");
+            //先将输入小计放到收支盈亏中
             if (shouRuSumDic.Count > 0)
             {
                 foreach (var shouRuData in shouRuSumDic)
@@ -189,6 +198,7 @@ namespace Business
                     resultSumDic.Add(shouRuData.Key, shouRuData.Value);
                 }
             }
+            //用收支盈亏中的收入减去对应的支出小计，就是最终的收支盈亏
             if (zhiChuSumDic.Count > 0)
             {
                 foreach (var zhiChuData in zhiChuSumDic)
@@ -200,7 +210,8 @@ namespace Business
 
                     if (resultSumDic.ContainsKey(zhiChuData.Key))
                     {
-                        resultSumDic[zhiChuData.Key] = (Convert.ToDouble(resultSumDic[zhiChuData.Key]) - Convert.ToDouble(zhiChuData.Value)).ToString();
+                        var resultData = Convert.ToDouble(resultSumDic[zhiChuData.Key]) - Convert.ToDouble(zhiChuData.Value);
+                        resultSumDic[zhiChuData.Key] = Math.Round(resultData,2, MidpointRounding.AwayFromZero).ToString();
                     }
                     else
                     {
@@ -266,6 +277,47 @@ namespace Business
                 }
             }
             return result.OrderBy(x => x).ToList();
+        }
+
+        /// <summary>
+        /// 获取科目的所有下级
+        /// </summary>
+        /// <param name="accountItemIds"></param>
+        /// <param name="accountItems"></param>
+        /// <returns></returns>
+        public List<string> GetAccountWidthChildren(List<string> accountItemIds, List<AccountItemModel> accountItems)
+        {
+            var result = new List<string>();
+            foreach (var accountItemId in accountItemIds)
+            {
+                result.AddRange(GetAccountByChildren(accountItemId, accountItems));
+            }
+            return result.Distinct().OrderBy(x=>x).ToList();
+        }
+
+        /// <summary>
+        /// 获取某个科目的所有下级
+        /// </summary>
+        /// <param name="accountItemId"></param>
+        /// <param name="accountItems"></param>
+        public List<string> GetAccountByChildren(string accountItemId, List<AccountItemModel> accountItems)
+        {
+            var result = new List<string>();
+            var accountItem = accountItems.FirstOrDefault(x => x.AccountCode == accountItemId);
+            if (accountItem == null)
+            {
+                return result;
+            }
+            result.Add(accountItemId);
+            if (accountItem.IsLeaf == 0)
+            {
+                var children = accountItems.Where(x => x.ParentCode == accountItemId);
+                foreach (var child in children)
+                {
+                    result.AddRange(GetAccountByChildren(child.AccountCode, accountItems));
+                }
+            }
+            return result;
         }
     }
 }

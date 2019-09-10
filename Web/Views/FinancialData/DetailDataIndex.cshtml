@@ -114,9 +114,19 @@
                     width : 100,
                     columns : 1, // 在上面定义的宽度上展示3列
                     items : [{
-                        boxLabel : '只统计下级',
+                        boxLabel : '统计下级项目',
                         id: 'onlyChildrenCheckBox',
                         name: 'onlyChildrenCheckBox'
+                    }]
+                }, "-",
+                {
+                    xtype: 'checkboxgroup',
+                    width: 100,
+                    columns: 1, 
+                    items: [{
+                        boxLabel: '统计下级科目',
+                        id: 'accountChildrenCheckBox',
+                        name: 'accountChildrenCheckBox'
                     }]
                 }, "-",
                 { text: '统计选中项', iconCls: "Add", handler: LoadGridData },
@@ -152,8 +162,12 @@
             var qiJianTypeId = Ext.getCmp("GridQiJianRadioGroup").getValue().GridQiJianRadio;
             var xiangMuTreeTypeId = Ext.getCmp("TreeTypeRadioGroup").getValue().TreeTypeRadio;
             var onlyStatisticChildren = 0;
+            var statisticAccountChildren = 0;
             if (Ext.getCmp("onlyChildrenCheckBox").checked) {
                 onlyStatisticChildren = 1;
+            }
+            if (Ext.getCmp("accountChildrenCheckBox").checked) {
+                statisticAccountChildren = 1;
             }
             Ext.Ajax.request( {
                 url: '/FinancialData/GetFinancialDataGridColumns',
@@ -175,7 +189,8 @@
                     grid.reconfigure(newstore, newcolumns);  //定义grid的store和column   
                     newstore.loadWithParams({
                         excelId: excelId, accountItemIds: accountItemIds, financialDataItemIds: financialDataItemIds,
-                        qiJianTypeId: qiJianTypeId, onlyStatisticChildren: onlyStatisticChildren, xiangMuTreeTypeId: xiangMuTreeTypeId
+                        qiJianTypeId: qiJianTypeId, onlyStatisticChildren: onlyStatisticChildren, xiangMuTreeTypeId: xiangMuTreeTypeId,
+                        statisticAccountChildren: statisticAccountChildren
                     });
                 },
                 failure : function() {
@@ -196,7 +211,7 @@
             }
             location.href = "/FinancialData/ExportExcel?excelId=" + excelId + "&accountItemIds=" + accountItemIds
                 + "&financialDataItemIds=" + financialDataItemIds + "&qiJianTypeId=" + qiJianTypeId
-                + "&onlyStatisticChildren=" + onlyStatisticChildren + "&xiangMuTreeTypeId=" + xiangMuTreeTypeId;
+                + "&onlyStatisticChildren=" + onlyStatisticChildren + "&xiangMuTreeTypeId=" + xiangMuTreeTypeId + "&statisticAccountChildren=" + statisticAccountChildren;
             Ext.MessageBox.hide();
         }
     });

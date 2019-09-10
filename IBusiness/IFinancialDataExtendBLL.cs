@@ -34,6 +34,6 @@ namespace IBusiness
         /// <param name="onlyStatisticChildren">是否只统计下级项目</param>
         /// <returns></returns>
         DynamicGridDataModel GetGridData(int excelId, string accountItemIds, string financialDataItemIds,
-            int qiJianTypeId, int onlyStatisticChildren, int xiangMuTreeTypeId);
+            int qiJianTypeId, int onlyStatisticChildren, int xiangMuTreeTypeId, int statisticAccountChildren);
     }
 }
