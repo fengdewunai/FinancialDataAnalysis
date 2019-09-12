@@ -12,10 +12,12 @@ using Model;
 using Model.DataModel;
 using RuanYun.Logger;
 using Web.Controllers.Actions.FinancialDataActions;
+using Web.Filters;
 using Web.Models;
 
 namespace Web.Controllers
 {
+    [StatisticalCalls]
     public class FinancialDataController : Controller
     {
         private readonly IFinancialDataBLL _financialDataBll = ServiceLocator.Current.GetInstance<IFinancialDataBLL>();

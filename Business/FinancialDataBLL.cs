@@ -166,5 +166,14 @@ namespace Business
         {
             _financialDataDal.DeleteFinancialData(excelRecordId);
         }
+
+        /// <summary>
+        /// SaveStatisticalCallsRecord
+        /// </summary>
+        /// <param name="model"></param>
+        public void SaveStatisticalCallsRecord(StatisticalCallsRecordModel model)
+        {
+            _financialDataDal.SaveStatisticalCallsRecord(model);
+        }
     }
 }

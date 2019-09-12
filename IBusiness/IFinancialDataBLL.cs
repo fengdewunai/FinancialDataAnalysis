@@ -96,5 +96,11 @@ namespace IBusiness
         /// </summary>
         /// <param name="excelRecordId"></param>
         void DeleteFinancialData(int excelRecordId);
+
+        /// <summary>
+        /// SaveStatisticalCallsRecord
+        /// </summary>
+        /// <param name="model"></param>
+        void SaveStatisticalCallsRecord(StatisticalCallsRecordModel model);
     }
 }

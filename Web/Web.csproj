@@ -164,6 +164,7 @@
     <Compile Include="Controllers\Actions\FinancialDataActions\UpladExcelAction.cs" />
     <Compile Include="Controllers\FinancialDataController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Filters\StatisticalCallsAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

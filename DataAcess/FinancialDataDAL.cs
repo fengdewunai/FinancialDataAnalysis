@@ -181,5 +181,17 @@ namespace DataAcess
                 .Parameter("v_ExcelRecordId", excelRecordId)
                 .Execute();
         }
+
+        /// <summary>
+        /// SaveStatisticalCallsRecord
+        /// </summary>
+        /// <param name="model"></param>
+        public void SaveStatisticalCallsRecord(StatisticalCallsRecordModel model)
+        {
+            CurrentConnectStringContext.StoredProcedure("FinancialData_StatisticalCallsRecord_Save")
+                .Parameter("v_ActionName", model.ActionName)
+                .Parameter("v_CreateDateTime", model.CreateDateTime)
+                .Execute();
+        }
     }
 }

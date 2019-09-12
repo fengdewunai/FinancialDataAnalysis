@@ -85,6 +85,17 @@ BEGIN
 		   primary key (FinancialDataId)
 		) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='数据集合';
 	end if;
+	
+	IF NOT EXISTS (select 1 from information_schema.tables where table_schema='FinancialDataAnalysis' and table_name='StatisticalCallsRecord'  )
+	THEN
+		create table StatisticalCallsRecord
+		(
+		   StatisticalCallsRecordId      int not null auto_increment,
+		   ActionName        varchar(300) comment 'action名称',
+		   CreateDateTime    datetime comment '创建日期',
+		   primary key (StatisticalCallsRecordId)
+		) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='统计调用次数';
+	end if;
     
 END$$
 
@@ -371,4 +382,25 @@ BEGIN
 */
 	delete FROM `FinancialData`
     where ExcelRecordId = v_ExcelRecordId;
+END$$
+
+DROP PROCEDURE IF EXISTS FinancialData_StatisticalCallsRecord_Save$$
+CREATE PROCEDURE `FinancialData_StatisticalCallsRecord_Save`(
+	v_ActionName varchar(300),
+	v_CreateDateTime datetime
+)
+    SQL SECURITY INVOKER
+BEGIN
+/* 
+创建者:		高峰
+创建日期:	2019-09-12
+描述：		保存action统计信息
+修改记录:
+--------------------------------------------------------
+修改者		修改日期		修改目的
+
+--------------------------------------------------------
+*/
+	INSERT INTO `financialdataanalysis`.`statisticalcallsrecord`(`ActionName`,`CreateDateTime`)
+	VALUES(v_ActionName,v_CreateDateTime);
 END$$

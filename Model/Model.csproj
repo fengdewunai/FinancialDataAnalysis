@@ -47,6 +47,7 @@
     <Compile Include="DataModel\ExcelRecordModel.cs" />
     <Compile Include="DataModel\FinancialDataItemModel.cs" />
     <Compile Include="DataModel\FinancialDataModel.cs" />
+    <Compile Include="DataModel\StatisticalCallsRecordModel.cs" />
     <Compile Include="Enum\FinancialDataItemTypeEnum.cs" />
     <Compile Include="ExcelDataModel.cs" />
     <Compile Include="ExcelExportRequest.cs" />
