@@ -209,6 +209,10 @@
             if (Ext.getCmp("onlyChildrenCheckBox").checked) {
                 onlyStatisticChildren = 1;
             }
+            var statisticAccountChildren = 0;
+            if (Ext.getCmp("accountChildrenCheckBox").checked) {
+                statisticAccountChildren = 1;
+            }
             location.href = "/FinancialData/ExportExcel?excelId=" + excelId + "&accountItemIds=" + accountItemIds
                 + "&financialDataItemIds=" + financialDataItemIds + "&qiJianTypeId=" + qiJianTypeId
                 + "&onlyStatisticChildren=" + onlyStatisticChildren + "&xiangMuTreeTypeId=" + xiangMuTreeTypeId + "&statisticAccountChildren=" + statisticAccountChildren;
