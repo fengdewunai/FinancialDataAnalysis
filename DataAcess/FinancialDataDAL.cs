@@ -188,9 +188,11 @@ namespace DataAcess
         /// <param name="model"></param>
         public void SaveStatisticalCallsRecord(StatisticalCallsRecordModel model)
         {
-            CurrentConnectStringContext.StoredProcedure("FinancialData_StatisticalCallsRecord_Save")
+            CurrentConnectStringContext.StoredProcedure("FinancialData_StatisticalCallsRecord_Save_V2")
                 .Parameter("v_ActionName", model.ActionName)
                 .Parameter("v_CreateDateTime", model.CreateDateTime)
+                .Parameter("v_IPAddress", model.IpAddress)
+                .Parameter("v_SessionId", model.SessionId)
                 .Execute();
         }
     }

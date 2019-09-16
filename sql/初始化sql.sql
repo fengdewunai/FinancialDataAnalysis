@@ -93,6 +93,8 @@ BEGIN
 		   StatisticalCallsRecordId      int not null auto_increment,
 		   ActionName        varchar(300) comment 'action名称',
 		   CreateDateTime    datetime comment '创建日期',
+		   IPAddress    varchar(100) comment 'IP地址',
+		   SessionId	varchar(100) comment 'SessionId',
 		   primary key (StatisticalCallsRecordId)
 		) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8 COMMENT='统计调用次数';
 	end if;
@@ -403,4 +405,27 @@ BEGIN
 */
 	INSERT INTO `financialdataanalysis`.`statisticalcallsrecord`(`ActionName`,`CreateDateTime`)
 	VALUES(v_ActionName,v_CreateDateTime);
+END$$
+
+DROP PROCEDURE IF EXISTS FinancialData_StatisticalCallsRecord_Save_V2$$
+CREATE PROCEDURE `FinancialData_StatisticalCallsRecord_Save_V2`(
+	v_ActionName varchar(300),
+	v_CreateDateTime datetime,
+	v_IPAddress varchar(100),
+	v_SessionId varchar(100)
+)
+    SQL SECURITY INVOKER
+BEGIN
+/* 
+创建者:		高峰
+创建日期:	2019-09-12
+描述：		保存action统计信息
+修改记录:
+--------------------------------------------------------
+修改者		修改日期		修改目的
+高峰		2019-09-16		增加ip地址和sessionid的保存
+--------------------------------------------------------
+*/
+	INSERT INTO `financialdataanalysis`.`statisticalcallsrecord`(`ActionName`,`CreateDateTime`,`IPAddress`,`SessionId`)
+	VALUES(v_ActionName,v_CreateDateTime,v_IPAddress, v_SessionId);
 END$$
