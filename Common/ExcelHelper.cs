@@ -35,8 +35,8 @@ namespace Common
                 for (int col = 0; col < row.Count; col++)
                 {
                     sheet.Worksheet.Cells[rowIndex, col].SetStyle(rowIndex < request.TitleRowCount ? titleStyle : rowStyle);
-                    sheet.WriteText(rowIndex, col, row[col].Replace("^^", "\n"));
-                    int length = Encoding.UTF8.GetBytes(row[col]).Length;
+                    sheet.WriteText(rowIndex, col, row[col] == null ? "" : row[col].Replace("^^", "\n"));
+                    int length = Encoding.UTF8.GetBytes(row[col] == null ? "" : row[col]).Length;
                     double width = length * 2 < 8 ? 8 : length * 2;
                     if (rowIndex == (request.TitleRowCount - 1))
                     {

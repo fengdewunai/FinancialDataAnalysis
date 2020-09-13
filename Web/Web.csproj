@@ -51,6 +51,9 @@
     <Reference Include="Aspose.Words">
       <HintPath>..\packages\Aspose.Words.dll</HintPath>
     </Reference>
+    <Reference Include="AutoMapper, Version=7.0.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.7.0.1\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.dll</HintPath>
@@ -75,6 +78,10 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -152,6 +159,16 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Common\Helper\CommonHelper.cs" />
+    <Compile Include="Controllers\Actions\CompanyPushActions\AddAreaAction.cs" />
+    <Compile Include="Controllers\Actions\CompanyPushActions\AddCompanyAction.cs" />
+    <Compile Include="Controllers\Actions\CompanyPushActions\AddCompanyRecordAction.cs" />
+    <Compile Include="Controllers\Actions\CompanyPushActions\DeleteCompanyConnectRecordAction.cs" />
+    <Compile Include="Controllers\Actions\CompanyPushActions\ExportExcelAction.cs" />
+    <Compile Include="Controllers\Actions\CompanyPushActions\GetAllAreaAction.cs" />
+    <Compile Include="Controllers\Actions\CompanyPushActions\GetAreaFormDataAction.cs" />
+    <Compile Include="Controllers\Actions\CompanyPushActions\GetAreaTreeDataAction.cs" />
+    <Compile Include="Controllers\Actions\CompanyPushActions\GetHistoryGridDataAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\DeleteExcelAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\DeleteExcelColumnAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\ExportExcelAction.cs" />
@@ -162,12 +179,16 @@
     <Compile Include="Controllers\Actions\FinancialDataActions\GetFinancialDataItemTreeDataAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\PeggingFinancialDataAction.cs" />
     <Compile Include="Controllers\Actions\FinancialDataActions\UpladExcelAction.cs" />
+    <Compile Include="Controllers\CompanyPushController.cs" />
     <Compile Include="Controllers\FinancialDataController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Filters\StatisticalCallsAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Request\CompanyPush\AddAreaRequest.cs" />
+    <Compile Include="Models\Request\CompanyPush\CompanyFullInfoRequest.cs" />
+    <Compile Include="Models\Response\CompanyPush\GetAllAreaResponse.cs" />
     <Compile Include="Models\Response\DeleteExcelColumnResponse.cs" />
     <Compile Include="Models\Response\GetAccountItemTreeDataResponse.cs" />
     <Compile Include="Models\Response\GetExcelListResponse.cs" />
@@ -183,6 +204,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\CompanyPush\CompanyPushIndex\AddCompanyWin.js" />
+    <Content Include="Scripts\CompanyPush\CompanyPushIndex\AreaCombobox.js" />
+    <Content Include="Scripts\CompanyPush\CompanyPushIndex\AreaTree.js" />
+    <Content Include="Scripts\CompanyPush\CompanyPushIndex\MainForm.js" />
     <Content Include="Scripts\ext4.2\resources\ext-theme-classic\Readme.md" />
     <Content Include="Scripts\ext4.2\bootstrap.js" />
     <Content Include="Scripts\ext4.2\ext-all.js" />
@@ -1516,9 +1541,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Common\" />
     <Folder Include="Files\FinancialExcel\" />
-    <Folder Include="Models\Request\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -1532,6 +1555,7 @@
     <Content Include="logger.config" />
     <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <Content Include="Views\CompanyPush\CompanyPushIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Business\Business.csproj">

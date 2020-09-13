@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "公司信息";
+}
+<script type="text/javascript" src="/Scripts/CompanyPush/CompanyPushIndex/AreaCombobox.js"></script>
+<script type="text/javascript" src="/Scripts/CompanyPush/CompanyPushIndex/AreaTree.js"></script>
+<script type="text/javascript" src="/Scripts/CompanyPush/CompanyPushIndex/AddCompanyWin.js"></script>
+<script type="text/javascript" src="/Scripts/CompanyPush/CompanyPushIndex/MainForm.js"></script>
+<script>
+    _currentTreeNodeData = null;
+    Ext.onReady(function () {
+        
+
+        new Ext.Viewport({
+            layout: "border", //边界布局
+            padding: '3 3 3 3',
+            frame: true,
+            items: [
+                areaTree,
+                mainForm
+            ]
+        });
+
+    });
+</script>

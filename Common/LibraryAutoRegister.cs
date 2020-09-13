@@ -1,4 +1,6 @@
-﻿using RuanYun.IoC;
+﻿using AutoMapper;
+using Model.data;
+using RuanYun.IoC;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -74,6 +76,21 @@ namespace Common
                     .Where(x=>x.ToLower().Contains("business") || x.ToLower().Contains("ibusiness") || x.ToLower().Contains("dataacess") || x.ToLower().Contains("idataacess"))
                     .Select(Path.GetFileNameWithoutExtension)
                     .ToList();
+        }
+
+        /// <summary>
+        /// Creates the automatic mapper.
+        /// </summary>
+        /// <param name="autoMapperConfig">外部注册</param>
+        public static void InitializeAutoMapper(Action<MapperTypeConfig> autoMapperConfig = null)
+        {
+            MapperProvider.Initialize((MapperTypeConfig cfg) =>
+            {
+                autoMapperConfig?.Invoke(cfg);
+            },
+            (IMapperConfigurationExpression cfg) =>
+            {
+            });
         }
     }
 }
